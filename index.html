@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, viewport-fit=cover">
+		<title>慢慢島</title>
+		<style>
+html, body, #canvas {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+body {
+	color: #29483f;
+	background: linear-gradient(180deg, #9fd3e1 0%, #dcebc2 100%);
+	overflow: hidden;
+	touch-action: none;
+}
+
+#canvas {
+	display: block;
+}
+
+#canvas:focus {
+	outline: none;
+}
+
+#status, #status-splash, #status-progress {
+	position: absolute;
+	left: 0;
+	right: 0;
+}
+
+#status, #status-splash {
+	top: 0;
+	bottom: 0;
+}
+
+#status {
+	background: linear-gradient(180deg, #9fd3e1 0%, #dcebc2 100%);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	visibility: visible;
+}
+
+#status-splash {
+	max-height: 100%;
+	max-width: 100%;
+	margin: auto;
+}
+
+#status-splash { display: none; }
+
+#godot-loading-card {
+	width: min(78vw, 360px);
+	padding: 28px;
+	border: 4px solid #fff9e7;
+	border-radius: 26px;
+	background: rgba(255, 249, 231, 0.94);
+	box-shadow: 0 10px 28px rgba(50, 82, 74, 0.22);
+	text-align: center;
+}
+
+#godot-loading-title { font-size: 30px; font-weight: 700; color: #315e54; }
+#godot-loading-copy { margin-top: 9px; font-size: 16px; color: #557368; }
+#status-progress { accent-color: #e6a65d; }
+#status-notice { margin-top: 16px; color: #9a4545; line-height: 1.45; }
+
+
+#status-splash.fullsize--true {
+	height: 100%;
+	width: 100%;
+	object-fit: contain;
+}
+
+#status-splash.use-filter--false {
+	image-rendering: pixelated;
+}
+
+#status-progress, #status-notice {
+	display: none;
+}
+
+#status-progress {
+	bottom: 10%;
+	width: 50%;
+	margin: 0 auto;
+}
+
+#status-notice {
+	background-color: #5b3943;
+	border-radius: 0.5rem;
+	border: 1px solid #9b3943;
+	color: #e0e0e0;
+	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
+	line-height: 1.3;
+	margin: 0 2rem;
+	overflow: hidden;
+	padding: 1rem;
+	text-align: center;
+	z-index: 1;
+}
+		</style>
+		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
+<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
+
+	</head>
+	<body>
+		<canvas id="canvas">
+			Your browser does not support the canvas tag.
+		</canvas>
+
+		<noscript>
+			Your browser does not support JavaScript.
+		</noscript>
+
+		<div id="status">
+			<div id="godot-loading-card">
+				<div id="godot-loading-title">慢慢島</div>
+				<div id="godot-loading-copy">正在準備小島，請稍候…</div>
+			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index.png" alt="">
+			<progress id="status-progress"></progress>
+			<div id="status-notice"></div>
+			</div>
+		</div>
+
+		
+		<script id="manman-room-endpoint">window.manmanRoomEndpoint = "wss://portfolio-caribbean-leslie-iowa.trycloudflare.com";</script>
+		<script id="manman-web-platform">/* Shared Web render density policy. CSS/layout keeps the browser's native DPR;
+ * only Godot's physical canvas backing and matching content scale use this cap. */
+(() => {
+  const candidate = Number(window.devicePixelRatio);
+  const physical = Number.isFinite(candidate) && candidate > 0 ? candidate : 1;
+  window.manmanPhysicalPixelRatio = physical;
+  window.manmanRenderPixelRatio = Math.min(physical, 2);
+})();
+</script>
+		<script id="manman-viewport-bridge">/* Canvas-space UI bounds. The game keeps rendering edge-to-edge; only controls
+ * avoid browser chrome, display cutouts and the on-screen keyboard.
+ * No gameplay state, input event, or simulation clock is changed here. */
+(() => {
+  const probe = document.createElement('div');
+  probe.id = 'manman-safe-area-probe';
+  probe.setAttribute('aria-hidden', 'true');
+  probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;inset:0 auto auto 0;width:0;height:0;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';
+  document.body.appendChild(probe);
+  let queued = false;
+  const number = value => Math.max(0, Number.parseFloat(value) || 0);
+  function measure() {
+    queued = false;
+    const canvas = document.getElementById('canvas');
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    if (!(rect.width > 0 && rect.height > 0)) return;
+    const style = window.getComputedStyle(probe);
+    const visual = window.visualViewport;
+    const vx = visual?.offsetLeft || 0, vy = visual?.offsetTop || 0;
+    const vw = visual?.width || window.innerWidth, vh = visual?.height || window.innerHeight;
+    const left = Math.max(rect.left, number(style.paddingLeft), vx);
+    const top = Math.max(rect.top, number(style.paddingTop), vy);
+    const right = Math.min(rect.left + rect.width, window.innerWidth - number(style.paddingRight), vx + vw);
+    const bottom = Math.min(rect.top + rect.height, window.innerHeight - number(style.paddingBottom), vy + vh);
+    window.manmanViewportJSON = JSON.stringify({width:rect.width,height:rect.height,
+      left:Math.max(0,left-rect.left),top:Math.max(0,top-rect.top),
+      right:Math.max(0,rect.left+rect.width-right),bottom:Math.max(0,rect.top+rect.height-bottom)});
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    window.requestAnimationFrame(measure);
+  }
+  window.addEventListener('resize', schedule);
+  window.addEventListener('orientationchange', schedule);
+  window.visualViewport?.addEventListener('resize', schedule);
+  window.visualViewport?.addEventListener('scroll', schedule);
+  document.addEventListener('visibilitychange', schedule);
+  const canvas = document.getElementById('canvas');
+  if (window.ResizeObserver && canvas) new window.ResizeObserver(schedule).observe(canvas);
+  measure();
+})();
+</script>
+		<script id="manman-instrument-audio">/* One bounded media voice for long instrument clips, outside Godot's sample
+ * decoder/mixer. This isolates one reported iOS risk; it is NOT a guarantee
+ * against Safari process termination. Never writes gameplay or save data. */
+(() => {
+  'use strict';
+  if (window.manmanInstrumentAudio) return;
+  const durations = { morning: 14, breeze: 16 };
+  let voice = null, serial = 0, timer = null, endTimer = null;
+  let active = false, paused = false, primed = false, id = '', state = 'idle';
+  let errors = 0, starts = 0, stops = 0, gain = 0.32, pending = null;
+  const clamp = (n, a, b) => Number.isFinite(Number(n)) ? Math.min(b, Math.max(a, Number(n))) : a;
+  function cancelTimers() { clearTimeout(timer); clearTimeout(endTimer); timer = endTimer = null; }
+  function stop(detach = true) {
+    ++serial; cancelTimers(); pending = null; active = paused = false; id = ''; state = 'idle';
+    if (voice) {
+      voice.volume = 0; voice.pause();
+      if (detach) { voice.removeAttribute('src'); voice.load(); }
+    }
+    ++stops;
+  }
+  function failed(token) {
+    if (token !== serial) return;
+    ++errors; stop(); state = 'silent';
+  }
+  function ensureVoice() {
+    if (voice) return voice;
+    voice = document.createElement('audio');
+    voice.preload = 'metadata'; voice.loop = false;
+    voice.setAttribute('playsinline', '');
+    voice.addEventListener('ended', () => stop());
+    voice.addEventListener('error', () => { if (active) failed(serial); });
+    return voice;
+  }
+  function fadeIn(token) {
+    let step = 0;
+    const advance = () => {
+      if (token !== serial || !active || paused) return;
+      voice.volume = gain * Math.min(1, ++step / 6);
+      if (step < 6) timer = setTimeout(advance, 16);
+    };
+    advance();
+  }
+  function play(song, from = 0, volume = 0.32) {
+    if (!Object.hasOwn(durations, song) || document.hidden) return false;
+    stop(false);
+    const token = serial, media = ensureVoice();
+    id = song; gain = clamp(volume, 0, 0.65); active = true; state = 'loading';
+    const offset = clamp(from, 0, durations[song]);
+    if (offset >= durations[song]) { stop(); return false; }
+    const path = new URL('audio/instruments/' + song + '.wav', window.location.href).href;
+    media.src = path; media.volume = 0; media.loop = false;
+    try { media.currentTime = offset; } catch (_) { /* Metadata may not be ready. */ }
+    pending = { song, offset, volume: gain };
+    try {
+      Promise.resolve(media.play()).then(() => {
+        if (token !== serial) return;
+        primed = true; pending = null; state = 'playing'; ++starts; fadeIn(token);
+        endTimer = setTimeout(() => { if (token === serial) stop(); }, (durations[song] - offset + 0.5) * 1000);
+      }).catch(() => failed(token));
+    } catch (_) { failed(token); }
+    return true;
+  }
+  function pause(value) {
+    if (!voice || !active || paused === Boolean(value)) return;
+    paused = Boolean(value);
+    if (paused) { voice.volume = 0; voice.pause(); state = 'paused'; cancelTimers(); }
+    else {
+      const token = serial;
+      try { Promise.resolve(voice.play()).then(() => { if (token === serial) { state = 'playing'; fadeIn(token); endTimer = setTimeout(() => { if (token === serial) stop(); }, Math.max(500, (durations[id] - voice.currentTime + 0.5) * 1000)); } }).catch(() => failed(token)); }
+      catch (_) { failed(token); }
+    }
+  }
+  function prime() {
+    if (document.hidden || primed || active) return;
+    const token = ++serial, media = ensureVoice();
+    media.src = new URL('audio/instruments/quiet.wav', window.location.href).href;
+    media.volume = 0;
+    try { Promise.resolve(media.play()).then(() => {
+      primed = true;
+      if (token === serial && !active) { media.pause(); media.removeAttribute('src'); media.load(); }
+    }).catch(() => { /* A blocked autoplay is not a game failure. */ }); } catch (_) {}
+  }
+  window.manmanInstrumentAudio = {
+    play, stop, pause,
+    setGain(value) { gain = clamp(value, 0, 0.65); if (voice && active && !paused) voice.volume = gain; },
+    snapshot() { return { state, active, paused, song: id, voices: voice ? 1 : 0, currentTime: voice ? voice.currentTime : 0, starts, stops, errors }; }
+  };
+  document.addEventListener('pointerdown', prime, { capture: true, passive: true });
+  document.addEventListener('keydown', prime, { capture: true });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
+  window.addEventListener('pagehide', () => stop());
+})();
+</script>
+		<script>
+		window.addEventListener('error', function (event) {
+			const notice = document.getElementById('status-notice');
+			if (notice) notice.textContent = '啟動失敗：' + (event.message || '未知錯誤');
+		});
+		window.addEventListener('unhandledrejection', function (event) {
+			const notice = document.getElementById('status-notice');
+			if (notice) notice.textContent = '載入失敗：' + (event.reason?.message || event.reason || '未知錯誤');
+		});
+		</script>
+		<script src="index.js?build=840b6f93202f9ac7"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":108269884,"index.wasm":10153810},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_THREADS_ENABLED = false;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.remove();
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('An unknown error occurred.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			// There's a chance that installing the service worker would fix the issue
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				// For some reason, `getRegistration()` can stall
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				// Reload if there was no error.
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			// Display the message as usual
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
+	} else {
+		setStatusMode('progress');
+		engine.startGame({
+			'onProgress': function (current, total) {
+				if (current > 0 && total > 0) {
+					statusProgress.value = current;
+					statusProgress.max = total;
+				} else {
+					statusProgress.removeAttribute('value');
+					statusProgress.removeAttribute('max');
+				}
+			},
+		}).then(() => {
+			setStatusMode('hidden');
+		}, displayFailureNotice);
+	}
+}());
+		</script>
+	</body>
+</html>
+

@@ -1,0 +1,500 @@
+{
+  "schema_version": 2,
+  "run_id": "20260925-065354-2194-b5dada80-fast",
+  "mode": "fast",
+  "profile": "test",
+  "source_sha": "c15847a57ea4e84b64603d116ebbd5e74322b149",
+  "sha": "c15847a57ea4e84b64603d116ebbd5e74322b149",
+  "input_digest": "e1c9132947d95904bccd25ba5daa0390aca695ef34675884d3accb979d6995a8",
+  "manifest_digest": "646d3945c00f87c0658fb485f12da04d6b47e8ef76ef973228c695fe23180671",
+  "platform": {
+    "system": "Linux",
+    "release": "6.17.0-1022-azure",
+    "python": "3.12.3"
+  },
+  "complete": true,
+  "result": "PASS",
+  "qa_result": "PASS",
+  "required_ids": [
+    "godot_import_verify",
+    "qa_tooling_unittest",
+    "test_core",
+    "test_batch_a_save",
+    "test_save_operations",
+    "test_island_action_scene",
+    "test_icon_backpack",
+    "test_persistent_ui",
+    "test_new_game_layout_candidates",
+    "test_new_game_map_preview",
+    "test_backpack_unique_item_icons",
+    "test_fruit_item_identity",
+    "test_gameplay_readability_scale",
+    "test_ground_prop_readability",
+    "test_visible_nature",
+    "test_direct_gathering",
+    "test_refreshments",
+    "test_terrain_flow",
+    "test_presentation_controls",
+    "test_mobile_web_acceptance",
+    "test_room_server_state",
+    "test_room_snapshot_privacy",
+    "test_room_runtime",
+    "test_room_coop",
+    "room_network_transport",
+    "test_multiplayer_giant_encounter",
+    "test_touch_ownership",
+    "test_web_font_glyphs",
+    "godot_web_compression",
+    "godot_web_export",
+    "godot_web_browser"
+  ],
+  "tests": {
+    "godot_import_verify": {
+      "id": "godot_import_verify",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 5.48231,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/godot_import_verify/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "qa_tooling_unittest": {
+      "id": "qa_tooling_unittest",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 3.036374,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/qa_tooling_unittest/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_core": {
+      "id": "test_core",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 0.275467,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_core/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_batch_a_save": {
+      "id": "test_batch_a_save",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 5.878845,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_batch_a_save/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_save_operations": {
+      "id": "test_save_operations",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 14.062333,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_save_operations/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_island_action_scene": {
+      "id": "test_island_action_scene",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 9.516712,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_island_action_scene/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_icon_backpack": {
+      "id": "test_icon_backpack",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 9.695243,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_icon_backpack/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_persistent_ui": {
+      "id": "test_persistent_ui",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 9.229346,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_persistent_ui/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_new_game_layout_candidates": {
+      "id": "test_new_game_layout_candidates",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 8.846178,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_new_game_layout_candidates/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_new_game_map_preview": {
+      "id": "test_new_game_map_preview",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 8.356299,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_new_game_map_preview/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_backpack_unique_item_icons": {
+      "id": "test_backpack_unique_item_icons",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 1.585984,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_backpack_unique_item_icons/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_fruit_item_identity": {
+      "id": "test_fruit_item_identity",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 3.262361,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_fruit_item_identity/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_gameplay_readability_scale": {
+      "id": "test_gameplay_readability_scale",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 6.805744,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_gameplay_readability_scale/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_ground_prop_readability": {
+      "id": "test_ground_prop_readability",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 6.687189,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_ground_prop_readability/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_visible_nature": {
+      "id": "test_visible_nature",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 9.788933,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_visible_nature/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_direct_gathering": {
+      "id": "test_direct_gathering",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 11.738645,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_direct_gathering/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_refreshments": {
+      "id": "test_refreshments",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 11.000403,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_refreshments/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_terrain_flow": {
+      "id": "test_terrain_flow",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 20.201528,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_terrain_flow/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_presentation_controls": {
+      "id": "test_presentation_controls",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 9.79004,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_presentation_controls/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_mobile_web_acceptance": {
+      "id": "test_mobile_web_acceptance",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 8.327928,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_mobile_web_acceptance/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_room_server_state": {
+      "id": "test_room_server_state",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 40.349988,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_room_server_state/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_room_snapshot_privacy": {
+      "id": "test_room_snapshot_privacy",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 5.222726,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_room_snapshot_privacy/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_room_runtime": {
+      "id": "test_room_runtime",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 10.255495,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_room_runtime/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_room_coop": {
+      "id": "test_room_coop",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 4.47602,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_room_coop/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "room_network_transport": {
+      "id": "room_network_transport",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 41.670215,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/room_network_transport/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_multiplayer_giant_encounter": {
+      "id": "test_multiplayer_giant_encounter",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 3.454859,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_multiplayer_giant_encounter/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_touch_ownership": {
+      "id": "test_touch_ownership",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 0.379904,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_touch_ownership/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "test_web_font_glyphs": {
+      "id": "test_web_font_glyphs",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 8.837269,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_web_font_glyphs/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "godot_web_compression": {
+      "id": "godot_web_compression",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 2.248447,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/godot_web_compression/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "godot_web_export": {
+      "id": "godot_web_export",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 94.072302,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/godot_web_export/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "godot_web_browser": {
+      "id": "godot_web_browser",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 47.549144,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/godot_web_browser/stdout.log",
+      "errors": [],
+      "anomalies": []
+    }
+  },
+  "failures": [],
+  "anomalies": [],
+  "metrics": {},
+  "seeds": [],
+  "timing": {
+    "jobs_seconds": 422.084231
+  },
+  "known_gaps": [
+    "Fast TEST release checks only; full regression and multi-seed coverage were not run.",
+    "No real phone, public WSS, cross-network or long-duration performance acceptance."
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "population-2-3-8-11",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "eligible-banter-selector",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "acquaintance-no-banter",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "low-mood-no-banter",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "factual-memory-source",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "missing-memory-no-callback",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "bounded-memory-arc",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "critical-needs-group-recruitment",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "navigation-solid-start-recovery",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "social-pause-resume",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "activity-phase-order",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "zero-facility-life",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "multi-day-lifestyle",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "new-game-two-residents",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "save-load-recovery",
+      "exposures": 1,
+      "status": "PASS",
+      "evidence": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_batch_a_save/stdout.log"
+    },
+    {
+      "scenario_id": "conversation-typewriter",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "conversation-scene",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "web-font-glyphs",
+      "exposures": 1,
+      "status": "PASS",
+      "evidence": "/tmp/manman-qa/runs/20260925-065354-2194-b5dada80-fast/test_web_font_glyphs/stdout.log"
+    },
+    {
+      "scenario_id": "mayor-activity-aware",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "qa-observer-readonly",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "wander-rhythm",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "natural-conversation-exposure",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "natural-factual-callback-exposure",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "natural-banter-exposure",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    }
+  ],
+  "scenario_errors": [],
+  "prepared_sha": "c15847a57ea4e84b64603d116ebbd5e74322b149"
+}
