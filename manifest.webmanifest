@@ -1,0 +1,27 @@
+{
+  "name": "慢慢島",
+  "short_name": "慢慢島",
+  "description": "在線上打造並生活的慢慢島",
+  "lang": "zh-Hant",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#dcebc2",
+  "theme_color": "#315e54",
+  "icons": [
+    {
+      "src": "./pwa/icon-192.b3a22addd3acddb8.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./pwa/icon-512.91db8df9c60a342c.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

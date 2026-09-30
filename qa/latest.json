@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "run_id": "20260930-223735-2943-2b42ae7f-fast",
+  "mode": "fast",
+  "profile": "test",
+  "source_sha": "bf614e16ff11d0e2ccb24bdea6b56f31eee8f9f3",
+  "sha": "bf614e16ff11d0e2ccb24bdea6b56f31eee8f9f3",
+  "input_digest": "1f09c56122f93f6b40aba686dd5b9079639209f0092e586297db931fc2b439b3",
+  "manifest_digest": "4f4367894070d158b54576c3b8cdb25f665f7989946ba933131b1ab1c3f3c748",
+  "platform": {
+    "system": "Linux",
+    "release": "6.17.0-1022-azure",
+    "python": "3.12.3"
+  },
+  "complete": true,
+  "result": "PASS",
+  "qa_result": "PASS",
+  "required_ids": [
+    "qa_tooling_unittest",
+    "godot_web_compression",
+    "change_locality",
+    "import_cache",
+    "web_candidate",
+    "browser_control_stability",
+    "web_save_lease",
+    "godot_web_export"
+  ],
+  "tests": {
+    "qa_tooling_unittest": {
+      "id": "qa_tooling_unittest",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 0.870781,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260930-223735-2943-2b42ae7f-fast/qa_tooling_unittest/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "godot_web_compression": {
+      "id": "godot_web_compression",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 0.074202,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260930-223735-2943-2b42ae7f-fast/godot_web_compression/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "change_locality": {
+      "id": "change_locality",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 0.100968,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260930-223735-2943-2b42ae7f-fast/change_locality/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "import_cache": {
+      "id": "import_cache",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 0.111367,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260930-223735-2943-2b42ae7f-fast/import_cache/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "web_candidate": {
+      "id": "web_candidate",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 0.072547,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260930-223735-2943-2b42ae7f-fast/web_candidate/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "browser_control_stability": {
+      "id": "browser_control_stability",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 0.06144,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260930-223735-2943-2b42ae7f-fast/browser_control_stability/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "web_save_lease": {
+      "id": "web_save_lease",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 0.046967,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260930-223735-2943-2b42ae7f-fast/web_save_lease/stdout.log",
+      "errors": [],
+      "anomalies": []
+    },
+    "godot_web_export": {
+      "id": "godot_web_export",
+      "status": "PASS",
+      "completed": true,
+      "seconds": 275.721157,
+      "exit_code": 0,
+      "log": "/tmp/manman-qa/runs/20260930-223735-2943-2b42ae7f-fast/godot_web_export/stdout.log",
+      "errors": [],
+      "anomalies": []
+    }
+  },
+  "failures": [],
+  "anomalies": [],
+  "metrics": {},
+  "seeds": [],
+  "timing": {
+    "jobs_seconds": 277.059429
+  },
+  "known_gaps": [
+    "Fast TEST release checks only; full regression and multi-seed coverage were not run.",
+    "No real phone, public WSS, cross-network or long-duration performance acceptance."
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "population-2-3-8-11",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "eligible-banter-selector",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "acquaintance-no-banter",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "low-mood-no-banter",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "factual-memory-source",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "missing-memory-no-callback",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "bounded-memory-arc",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "critical-needs-group-recruitment",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "navigation-solid-start-recovery",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "social-pause-resume",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "activity-phase-order",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "zero-facility-life",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "multi-day-lifestyle",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "new-game-two-residents",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "save-load-recovery",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "conversation-typewriter",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "conversation-scene",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "web-font-glyphs",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "mayor-activity-aware",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "qa-observer-readonly",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "wander-rhythm",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "natural-conversation-exposure",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "natural-factual-callback-exposure",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    },
+    {
+      "scenario_id": "natural-banter-exposure",
+      "exposures": 0,
+      "status": "NOT_MEASURED"
+    }
+  ],
+  "scenario_errors": [],
+  "prepared_sha": "bf614e16ff11d0e2ccb24bdea6b56f31eee8f9f3"
+}

@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, viewport-fit=cover">
+		<title>慢慢島</title>
+		<style>
+html, body, #canvas {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+body {
+	color: #29483f;
+	background: linear-gradient(180deg, #9fd3e1 0%, #dcebc2 100%);
+	overflow: hidden;
+	touch-action: none;
+}
+
+#canvas {
+	display: block;
+}
+
+#canvas:focus {
+	outline: none;
+}
+
+#status, #status-splash, #status-progress {
+	position: absolute;
+	left: 0;
+	right: 0;
+}
+
+#status, #status-splash {
+	top: 0;
+	bottom: 0;
+}
+
+#status {
+	background: linear-gradient(180deg, #9fd3e1 0%, #dcebc2 100%);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	visibility: visible;
+}
+
+#status-splash {
+	max-height: 100%;
+	max-width: 100%;
+	margin: auto;
+}
+
+#status-splash { display: none; }
+
+#godot-loading-card {
+	width: min(78vw, 360px);
+	padding: 18px 24px;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
+	text-align: center;
+	text-shadow: 0 2px 10px rgba(25,54,47,.45);
+	font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Noto Sans CJK TC", "Microsoft JhengHei", sans-serif;
+	font-synthesis: none;
+}
+
+#godot-loading-title { font-size: 30px; font-weight: 700; color: #fff9e7; }
+#godot-loading-copy { margin-top: 9px; font-size: 16px; color: #fffdf5; }
+#status-progress { appearance: none; -webkit-appearance: none; height: 6px; border: 0; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,.30); }
+#status-progress::-webkit-progress-bar { background: rgba(255,255,255,.30); border-radius: 999px; }
+#status-progress::-webkit-progress-value { background: rgba(242,181,103,.96); border-radius: 999px; }
+#status-progress::-moz-progress-bar { background: rgba(242,181,103,.96); border-radius: 999px; }
+#status-notice { margin-top: 16px; color: #9a4545; line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap; }
+#status[hidden] { display: none !important; }
+#status { transition: opacity 250ms ease; box-sizing: border-box; overflow: hidden; }
+#status.leaving { opacity: 0; pointer-events: none; }
+#boot-art-backdrop { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+#boot-art-backdrop img { position: absolute; inset: -4%; width: 108%; height: 108%; object-fit: cover; filter: blur(18px) saturate(.92) brightness(.82); transform: scale(1.03); opacity: 0; transition: opacity 250ms ease; }
+#boot-art-backdrop img.active { opacity: 1; }
+#boot-art { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+#boot-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 250ms ease; }
+#boot-art img.active { opacity: 1; }
+#godot-loading-card { z-index: 1; position: absolute; bottom: max(18px,env(safe-area-inset-bottom)); padding: 12px 24px; width: min(78vw,480px); max-height: calc(100dvh - 60px); overflow: auto; box-sizing: border-box; }
+#godot-loading-title { font-size: 22px; }
+#status-progress { width: 100%; margin: 12px 0 0; }
+#boot-percent { display: block; margin-top: 4px; font-variant-numeric: tabular-nums; }
+#status.awaiting-input #boot-art { display: block; }
+@media (max-aspect-ratio: 1 / 1) {
+	#status {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100dvh;
+		min-height: 100dvh;
+		bottom: auto;
+		overflow: hidden;
+		padding-top: env(safe-area-inset-top);
+		padding-bottom: env(safe-area-inset-bottom);
+	}
+	#boot-art {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		max-height: none;
+		overflow: hidden;
+		border-radius: 0;
+	}
+	#boot-art img {
+		object-fit: contain;
+		object-position: center;
+	}
+	#godot-loading-card {
+		position: absolute;
+		bottom: max(24px,env(safe-area-inset-bottom));
+		width: min(calc(100vw - 36px),480px);
+		max-height: none;
+		overflow: visible;
+		margin: 0 auto;
+		padding: clamp(12px,3.2vw,20px) clamp(18px,5vw,28px);
+	}
+}
+@media (prefers-reduced-motion: reduce) { #status, #boot-art img, #boot-art-backdrop img { transition: none; } }
+#status.awaiting-input { inset: 0; height: 100dvh; min-height: 100dvh; padding: 0; background: transparent; pointer-events: none; }
+#status.awaiting-input #godot-loading-card { padding: 12px 18px; width: min(82vw,480px); margin: 0 auto; }
+#status.awaiting-input #godot-loading-title { display: none; }
+#status.awaiting-input #godot-loading-copy { font-size: 12px; margin: 0; }
+#boot-error-controls button { margin: 12px 5px 0; padding: 10px 16px; border: 0; border-radius: 12px; background: #315e54; color: white; font: inherit; cursor: pointer; }
+#boot-error-controls textarea { width: 100%; min-height: 120px; margin-top: 12px; }
+
+
+#status-splash.fullsize--true {
+	height: 100%;
+	width: 100%;
+	object-fit: contain;
+}
+
+#status-splash.use-filter--false {
+	image-rendering: pixelated;
+}
+
+#status-progress, #status-notice {
+	display: none;
+}
+
+#status-progress {
+	bottom: 10%;
+	width: 50%;
+	margin: 0 auto;
+}
+
+#status-notice {
+	background-color: #5b3943;
+	border-radius: 0.5rem;
+	border: 1px solid #9b3943;
+	color: #e0e0e0;
+	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
+	line-height: 1.3;
+	margin: 0 2rem;
+	overflow: hidden;
+	padding: 1rem;
+	text-align: center;
+	z-index: 1;
+}
+		</style>
+		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
+<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
+
+	
+	<link rel="manifest" href="./manifest.webmanifest">
+	<meta name="theme-color" content="#315e54">
+	<link rel="apple-touch-icon" href="./pwa/icon-512.91db8df9c60a342c.png">
+</head>
+	<body>
+		<canvas id="canvas">
+			Your browser does not support the canvas tag.
+		</canvas>
+
+		<noscript>
+			Your browser does not support JavaScript.
+		</noscript>
+
+		<div id="status">
+			<div id="boot-art-backdrop" aria-hidden="true"><img class="active" src="loading/dock-a9a4fd579d445666.webp" fetchpriority="high" decoding="async" alt=""><img decoding="async" alt=""></div>
+			<div id="boot-art" aria-hidden="true"><img class="active" src="loading/dock-a9a4fd579d445666.webp" fetchpriority="high" decoding="async" alt=""><img decoding="async" alt=""></div>
+			<div id="godot-loading-card">
+				<div id="godot-loading-title">慢慢島</div>
+				<div id="godot-loading-copy">正在準備小島，請稍候…</div>
+			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index.png" alt="">
+			<progress id="status-progress"></progress>
+			<div id="status-notice"></div>
+			</div>
+		</div>
+
+		<script>window.manmanBootManifest={"version":1,"build":"e897da1506a44527","sourceSHA":"bf614e16ff11d0e2ccb24bdea6b56f31eee8f9f3","sourceDirty":false,"required":[{"logical":"index.wasm.gzip","url":"index.wasm.gzip.bc907a55c96a6362427aee152ab5cf4e19882ce5c49eb869de3c713d13997997","bytes":10185394,"sha256":"bc907a55c96a6362427aee152ab5cf4e19882ce5c49eb869de3c713d13997997"},{"logical":"index.pck.gzip","url":"index.pck.gzip.0e331b4d301b78e2e5cb9360866b017e363e1a1ef654da28b4982556228c205c","bytes":17173037,"sha256":"0e331b4d301b78e2e5cb9360866b017e363e1a1ef654da28b4982556228c205c"},{"url":"content-f2f5eab7dc5f37850132c6863800a690734615b71022ebec4950a485bd870708.pck.gzip","logical":"content-f2f5eab7dc5f37850132c6863800a690734615b71022ebec4950a485bd870708.pck.gzip","bytes":10135651,"sha256":"f2f5eab7dc5f37850132c6863800a690734615b71022ebec4950a485bd870708","rawBytes":10514344,"rawSha256":"30bff12e56b179a94c82a4a17a77dc826cb0f7265dec86abf533a4f0c87d902b"},{"url":"content-04fde674dea4eaa20082af2a892f8e6c9fb12c2d78b97472ee5e5119aff9fb5f.pck.gzip","logical":"content-04fde674dea4eaa20082af2a892f8e6c9fb12c2d78b97472ee5e5119aff9fb5f.pck.gzip","bytes":11649174,"sha256":"04fde674dea4eaa20082af2a892f8e6c9fb12c2d78b97472ee5e5119aff9fb5f","rawBytes":12136548,"rawSha256":"35a2480c03baf5a77cef41a270751f86ad93f3525b51b3577e7cc8bb13638f7f"},{"url":"content-790bfe5df474d17ecd73f951c1018a0300b701d8d15ef1a0a0225f6720e9d1fb.pck.gzip","logical":"content-790bfe5df474d17ecd73f951c1018a0300b701d8d15ef1a0a0225f6720e9d1fb.pck.gzip","bytes":12421805,"sha256":"790bfe5df474d17ecd73f951c1018a0300b701d8d15ef1a0a0225f6720e9d1fb","rawBytes":12535564,"rawSha256":"05d3c41970a2170f7730f5e9086e8ef84553546e8c5827c4ecb7b98b1308e45a"},{"url":"content-99149be6cccfc8e7010d60fac9c8a575607f700629fba229649f3b67604e0ca7.pck.gzip","logical":"content-99149be6cccfc8e7010d60fac9c8a575607f700629fba229649f3b67604e0ca7.pck.gzip","bytes":11256556,"sha256":"99149be6cccfc8e7010d60fac9c8a575607f700629fba229649f3b67604e0ca7","rawBytes":11677076,"rawSha256":"afba34d0bff00ab23fac8c5da2371da8cf4c99a6db1bf541d9b36b4c68ee46dd"},{"url":"content-963ed9640802ea81cf4fc4fa1de80716296215acc5e7f6e47e6244b550c6e866.pck.gzip","logical":"content-963ed9640802ea81cf4fc4fa1de80716296215acc5e7f6e47e6244b550c6e866.pck.gzip","bytes":11665330,"sha256":"963ed9640802ea81cf4fc4fa1de80716296215acc5e7f6e47e6244b550c6e866","rawBytes":11944188,"rawSha256":"a7bfb7699e5353bc4ba5c09a956a794dac57b89e2c4c2caf378518b39235e710"},{"url":"content-41452e4514d28485349120882e644506859edc76c34dbd0793c328e12d340821.pck.gzip","logical":"content-41452e4514d28485349120882e644506859edc76c34dbd0793c328e12d340821.pck.gzip","bytes":9165064,"sha256":"41452e4514d28485349120882e644506859edc76c34dbd0793c328e12d340821","rawBytes":9198372,"rawSha256":"87c03a8d6abba6b275ed454a01787808a1d0eca5e0ccd7642f03494e59ae1237"},{"url":"content-4ad372655f206f78d478d2e8437b5c3eae7c913d5af31dd8ac20a230b90f65d0.pck.gzip","logical":"content-4ad372655f206f78d478d2e8437b5c3eae7c913d5af31dd8ac20a230b90f65d0.pck.gzip","bytes":9975111,"sha256":"4ad372655f206f78d478d2e8437b5c3eae7c913d5af31dd8ac20a230b90f65d0","rawBytes":10404388,"rawSha256":"f842a94667d02b64dce401f91c53be75c0e7e85c5728a6a67522b6692788a6b1"},{"url":"content-d117f1d7dbdd5fdaacb489a02eb9ade23e3b04664e398ce344b25084e0d2b07d.pck.gzip","logical":"content-d117f1d7dbdd5fdaacb489a02eb9ade23e3b04664e398ce344b25084e0d2b07d.pck.gzip","bytes":9847485,"sha256":"d117f1d7dbdd5fdaacb489a02eb9ade23e3b04664e398ce344b25084e0d2b07d","rawBytes":9927524,"rawSha256":"4c6f75498d712299dfce3bd8771b01bb11ab280a7811ef81d87be294932570db"},{"url":"content-164e4492b90c358df6c9374c0e1469cff978e12a5603420aca6f2a0c51ca8a67.pck.gzip","logical":"content-164e4492b90c358df6c9374c0e1469cff978e12a5603420aca6f2a0c51ca8a67.pck.gzip","bytes":2656971,"sha256":"164e4492b90c358df6c9374c0e1469cff978e12a5603420aca6f2a0c51ca8a67","rawBytes":2677464,"rawSha256":"f3ec228cab651f32b9d3bc0838057560fa03392b94600921ca944bc41804ec91"},{"url":"content-b71df371c1ce80bb3cb0abe53026f08eb13db329e1e3900094d804d5a194a715.pck.gzip","logical":"content-b71df371c1ce80bb3cb0abe53026f08eb13db329e1e3900094d804d5a194a715.pck.gzip","bytes":12724181,"sha256":"b71df371c1ce80bb3cb0abe53026f08eb13db329e1e3900094d804d5a194a715","rawBytes":12760968,"rawSha256":"c34fdb08e1de0232a43c4d584e0662a8593a31ec5cf684ff33456a5cb158e59f"},{"url":"content-c68db2b8598be3960c0764f52fb122ee5d652591c96a69f490b4270c5d2e5072.pck.gzip","logical":"content-c68db2b8598be3960c0764f52fb122ee5d652591c96a69f490b4270c5d2e5072.pck.gzip","bytes":11481187,"sha256":"c68db2b8598be3960c0764f52fb122ee5d652591c96a69f490b4270c5d2e5072","rawBytes":12041984,"rawSha256":"9a9f886cbfedaf8bf0c62d6d569247db7819dd61afb5caa47af8693554ec1a10"},{"url":"content-fd2b81b078aaf67563d13c0d331ecb13cf5f576b9179810343589cb2de82891f.pck.gzip","logical":"content-fd2b81b078aaf67563d13c0d331ecb13cf5f576b9179810343589cb2de82891f.pck.gzip","bytes":8588938,"sha256":"fd2b81b078aaf67563d13c0d331ecb13cf5f576b9179810343589cb2de82891f","rawBytes":8939620,"rawSha256":"2814b2c71266483c511f53d666f3e85bf724de90e66a95ae92ce5982db7c0d0c"},{"url":"content-977ef2ba848b286248d8491d78856330be71d2f6693766bf4e635f82f7083d23.pck.gzip","logical":"content-977ef2ba848b286248d8491d78856330be71d2f6693766bf4e635f82f7083d23.pck.gzip","bytes":12155351,"sha256":"977ef2ba848b286248d8491d78856330be71d2f6693766bf4e635f82f7083d23","rawBytes":12279852,"rawSha256":"db57541a400c6ec6158e1fe224bf78dcbb12daec70d81dc2dc3b6a5062861443"},{"url":"content-dfda61a3ef36d99a715d7af9404275192d4746560a2c6c8d1b5fd679e47775da.pck.gzip","logical":"content-dfda61a3ef36d99a715d7af9404275192d4746560a2c6c8d1b5fd679e47775da.pck.gzip","bytes":5274726,"sha256":"dfda61a3ef36d99a715d7af9404275192d4746560a2c6c8d1b5fd679e47775da","rawBytes":5481372,"rawSha256":"021b6b5a244f2b9ed006f9ef63fe2b96b62df8c5c38a6d1078762ed854e33322"}]};</script>
+
+		<script id="manman-room-endpoint">window.manmanRoomEndpoint = "wss://maybe-compensation-workstation-install.trycloudflare.com";</script>
+		<script id="manman-web-platform">/* Shared Web render density policy. CSS/layout keeps the browser's native DPR;
+ * only Godot's physical canvas backing and matching content scale use this cap. */
+(() => {
+  const candidate = Number(window.devicePixelRatio);
+  const physical = Number.isFinite(candidate) && candidate > 0 ? candidate : 1;
+  window.manmanPhysicalPixelRatio = physical;
+  window.manmanRenderPixelRatio = Math.min(physical, 2);
+})();
+</script>
+		<script id="manman-viewport-bridge">/* Canvas-space UI bounds. The game keeps rendering edge-to-edge; only controls
+ * avoid browser chrome, display cutouts and the on-screen keyboard.
+ * No gameplay state, input event, or simulation clock is changed here. */
+(() => {
+  const probe = document.createElement('div');
+  probe.id = 'manman-safe-area-probe';
+  probe.setAttribute('aria-hidden', 'true');
+  probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;inset:0 auto auto 0;width:0;height:0;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';
+  document.body.appendChild(probe);
+  let queued = false;
+  const number = value => Math.max(0, Number.parseFloat(value) || 0);
+  function measure() {
+    queued = false;
+    const canvas = document.getElementById('canvas');
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    if (!(rect.width > 0 && rect.height > 0)) return;
+    const style = window.getComputedStyle(probe);
+    const visual = window.visualViewport;
+    const vx = visual?.offsetLeft || 0, vy = visual?.offsetTop || 0;
+    const vw = visual?.width || window.innerWidth, vh = visual?.height || window.innerHeight;
+    const left = Math.max(rect.left, number(style.paddingLeft), vx);
+    const top = Math.max(rect.top, number(style.paddingTop), vy);
+    const right = Math.min(rect.left + rect.width, window.innerWidth - number(style.paddingRight), vx + vw);
+    const bottom = Math.min(rect.top + rect.height, window.innerHeight - number(style.paddingBottom), vy + vh);
+    window.manmanViewportJSON = JSON.stringify({width:rect.width,height:rect.height,
+      left:Math.max(0,left-rect.left),top:Math.max(0,top-rect.top),
+      right:Math.max(0,rect.left+rect.width-right),bottom:Math.max(0,rect.top+rect.height-bottom)});
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    window.requestAnimationFrame(measure);
+  }
+  window.addEventListener('resize', schedule);
+  window.addEventListener('orientationchange', schedule);
+  window.visualViewport?.addEventListener('resize', schedule);
+  window.visualViewport?.addEventListener('scroll', schedule);
+  document.addEventListener('visibilitychange', schedule);
+  const canvas = document.getElementById('canvas');
+  if (window.ResizeObserver && canvas) new window.ResizeObserver(schedule).observe(canvas);
+  measure();
+})();
+</script>
+		<script id="manman-instrument-audio">/* One bounded media voice for long instrument clips, outside Godot's sample
+ * decoder/mixer. This isolates one reported iOS risk; it is NOT a guarantee
+ * against Safari process termination. Never writes gameplay or save data. */
+(() => {
+  'use strict';
+  if (window.manmanInstrumentAudio) return;
+  const durations = { morning: 14, breeze: 16 };
+  let voice = null, serial = 0, timer = null, endTimer = null;
+  let active = false, paused = false, primed = false, id = '', state = 'idle';
+  let errors = 0, starts = 0, stops = 0, gain = 0.32, pending = null;
+  const clamp = (n, a, b) => Number.isFinite(Number(n)) ? Math.min(b, Math.max(a, Number(n))) : a;
+  function cancelTimers() { clearTimeout(timer); clearTimeout(endTimer); timer = endTimer = null; }
+  function stop(detach = true) {
+    ++serial; cancelTimers(); pending = null; active = paused = false; id = ''; state = 'idle';
+    if (voice) {
+      voice.volume = 0; voice.pause();
+      if (detach) { voice.removeAttribute('src'); voice.load(); }
+    }
+    ++stops;
+  }
+  function failed(token) {
+    if (token !== serial) return;
+    ++errors; stop(); state = 'silent';
+  }
+  function ensureVoice() {
+    if (voice) return voice;
+    voice = document.createElement('audio');
+    voice.preload = 'metadata'; voice.loop = false;
+    voice.setAttribute('playsinline', '');
+    voice.addEventListener('ended', () => stop());
+    voice.addEventListener('error', () => { if (active) failed(serial); });
+    return voice;
+  }
+  function fadeIn(token) {
+    let step = 0;
+    const advance = () => {
+      if (token !== serial || !active || paused) return;
+      voice.volume = gain * Math.min(1, ++step / 6);
+      if (step < 6) timer = setTimeout(advance, 16);
+    };
+    advance();
+  }
+  function play(song, from = 0, volume = 0.32) {
+    if (!Object.hasOwn(durations, song) || document.hidden) return false;
+    stop(false);
+    const token = serial, media = ensureVoice();
+    id = song; gain = clamp(volume, 0, 0.65); active = true; state = 'loading';
+    const offset = clamp(from, 0, durations[song]);
+    if (offset >= durations[song]) { stop(); return false; }
+    const path = new URL('audio/instruments/' + song + '.wav', window.location.href).href;
+    media.src = path; media.volume = 0; media.loop = false;
+    try { media.currentTime = offset; } catch (_) { /* Metadata may not be ready. */ }
+    pending = { song, offset, volume: gain };
+    try {
+      Promise.resolve(media.play()).then(() => {
+        if (token !== serial) return;
+        primed = true; pending = null; state = 'playing'; ++starts; fadeIn(token);
+        endTimer = setTimeout(() => { if (token === serial) stop(); }, (durations[song] - offset + 0.5) * 1000);
+      }).catch(() => failed(token));
+    } catch (_) { failed(token); }
+    return true;
+  }
+  function pause(value) {
+    if (!voice || !active || paused === Boolean(value)) return;
+    paused = Boolean(value);
+    if (paused) { voice.volume = 0; voice.pause(); state = 'paused'; cancelTimers(); }
+    else {
+      const token = serial;
+      try { Promise.resolve(voice.play()).then(() => { if (token === serial) { state = 'playing'; fadeIn(token); endTimer = setTimeout(() => { if (token === serial) stop(); }, Math.max(500, (durations[id] - voice.currentTime + 0.5) * 1000)); } }).catch(() => failed(token)); }
+      catch (_) { failed(token); }
+    }
+  }
+  function prime() {
+    if (document.hidden || primed || active) return;
+    const token = ++serial, media = ensureVoice();
+    media.src = new URL('audio/instruments/quiet.wav', window.location.href).href;
+    media.volume = 0;
+    try { Promise.resolve(media.play()).then(() => {
+      primed = true;
+      if (token === serial && !active) { media.pause(); media.removeAttribute('src'); media.load(); }
+    }).catch(() => { /* A blocked autoplay is not a game failure. */ }); } catch (_) {}
+  }
+  window.manmanInstrumentAudio = {
+    play, stop, pause,
+    setGain(value) { gain = clamp(value, 0, 0.65); if (voice && active && !paused) voice.volume = gain; },
+    snapshot() { return { state, active, paused, song: id, voices: voice ? 1 : 0, currentTime: voice ? voice.currentTime : 0, starts, stops, errors }; }
+  };
+  document.addEventListener('pointerdown', prime, { capture: true, passive: true });
+  document.addEventListener('keydown', prime, { capture: true });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
+  window.addEventListener('pagehide', () => stop());
+})();
+</script>
+		<script>window.manmanLoadingBackgrounds=["loading/dock-a9a4fd579d445666.webp","loading/courtyard-eabbfa22e27161d1.webp","loading/sunset-c510303588ed8123.webp","loading/island-ec14a187120b2cbb.webp"];</script>
+		<script id="manman-boot-controller">(function (global) {
+  'use strict';
+  if (global.manmanBoot) return;
+  const order=['BOOT','DOWNLOAD','ENGINE','WORLD','PLAYABLE'];
+  const weights={BOOT:0,DOWNLOAD:0,ENGINE:70,WORLD:85,PLAYABLE:100};
+  const required=new Map(), listeners=new Set();
+  let startup=null,previous=null;
+  try {previous=JSON.parse(sessionStorage.getItem('manman.boot.last')||'null');} catch {}
+  const data={version:1,build:null,sourceSHA:null,sourceDirty:null,attempt:crypto.randomUUID(),timeOrigin:performance.timeOrigin,
+    navigation:performance.getEntriesByType('navigation')[0]?.type||'unknown',stage:'BOOT',percent:0,
+    transferredBytes:0,verifiedBytes:0,requiredBytes:0,engineStarts:0,lastSuccess:'BOOT',playable:false,
+    previousIncomplete:previous&&!previous.playable?{attempt:previous.attempt,stage:previous.stage}:null,
+    stages:[{stage:'BOOT',at:performance.now()}],measurements:[],error:null};
+  const snapshot=()=>JSON.parse(JSON.stringify(data));
+  function publish(){
+    try{sessionStorage.setItem('manman.boot.last',JSON.stringify({attempt:data.attempt,stage:data.stage,playable:data.playable,build:data.build}));}catch{}
+    for(const f of listeners){try{f(snapshot());}catch(e){console.error('Boot observer failed',e);}}
+  }
+  function stage(value){
+    if(data.stage==='ERROR'||!order.includes(value)||order.indexOf(value)<order.indexOf(data.stage)||value==='PLAYABLE')return;
+    if(value!==data.stage){data.stage=value;data.lastSuccess=value;data.stages.push({stage:value,at:performance.now()});}
+    data.percent=Math.max(data.percent,weights[value]);publish();
+  }
+  function fail(code,resource='',message=''){
+    if(data.stage==='ERROR')return;
+    data.error={code,resource,message,stage:data.stage,at:performance.now()};data.stage='ERROR';publish();
+  }
+  function progress(url,bytes,verified=false){
+    const item=required.get(url);if(!item||data.stage==='ERROR')return;
+    item.loaded=Math.max(item.loaded,Math.min(item.bytes,bytes));if(verified)item.verified=true;
+    data.transferredBytes=[...required.values()].reduce((s,x)=>s+x.loaded,0);
+    data.verifiedBytes=[...required.values()].reduce((s,x)=>s+(x.verified?x.bytes:0),0);
+    if(data.requiredBytes>0)data.percent=Math.max(data.percent,Math.min(70,Math.floor(70*data.transferredBytes/data.requiredBytes)));
+    if(data.requiredBytes>0&&data.verifiedBytes===data.requiredBytes&&data.stage==='DOWNLOAD')stage('ENGINE');
+    publish();
+  }
+  async function fetchVerified(asset,attempts=2,stallMs=30000,{fatal=true}={}){
+    if(data.stage==='ERROR')throw Error('Startup has failed');
+    if(!Number.isInteger(attempts)||attempts<1||attempts>3)throw Error('Invalid retry bound');
+    let last;
+    for(let attempt=0;attempt<attempts;attempt++){
+      let reader=null,complete=false,timer=null;
+      const abort=new AbortController();
+      const heartbeat=()=>{clearTimeout(timer);timer=setTimeout(()=>abort.abort(),stallMs);};
+      try{
+        heartbeat();
+        const response=await fetch(asset.url,{signal:abort.signal});
+        if(!response.ok){const e=Error('HTTP '+response.status);e.code='HTTP_'+response.status;throw e;}
+        if(!response.body)throw Object.assign(Error('Missing response body'),{code:'EMPTY_BODY'});
+        reader=response.body.getReader();const chunks=[];let size=0;
+        while(true){const part=await reader.read();if(part.done)break;size+=part.value.byteLength;
+          heartbeat();
+          if(size>asset.bytes)throw Object.assign(Error('Size exceeded'),{code:'SIZE_MISMATCH'});
+          chunks.push(part.value);progress(asset.url,size);
+        }
+        complete=true;
+        if(size!==asset.bytes)throw Object.assign(Error('Size mismatch'),{code:'SIZE_MISMATCH'});
+        const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length;}
+        chunks.length=0;
+        const hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(x=>x.toString(16).padStart(2,'0')).join('');
+        if(hash!==asset.sha256)throw Object.assign(Error('Hash mismatch'),{code:'HASH_MISMATCH'});
+        progress(asset.url,size,true);return bytes;
+      }catch(error){last=abort.signal.aborted?Object.assign(Error('Resource transfer stalled'),{code:'DOWNLOAD_STALLED'}):error;if(error.code==='HASH_MISMATCH'||error.code?.startsWith('HTTP_4'))break;}
+      finally{clearTimeout(timer);if(reader){try{if(!complete)await reader.cancel();}catch{}finally{reader.releaseLock();}}}
+    }
+    if(fatal)fail(last?.code||'DOWNLOAD_FAILED',asset.url,last?.message||String(last));throw last;
+  }
+  global.manmanBoot={snapshot,stage,fail,progress,fetchVerified,
+    configure(manifest){
+      if(data.build!==null)return;
+      const validated=new Map();let total=0;
+      if(typeof manifest.build!=='string'||!manifest.build||!Array.isArray(manifest.required))throw Error('Invalid boot manifest');
+      for(const asset of manifest.required){
+        if(typeof asset.url!=='string'||!asset.url||!Number.isSafeInteger(asset.bytes)||asset.bytes<0||validated.has(asset.url))throw Error('Invalid required resource');
+        validated.set(asset.url,{...asset,loaded:0,verified:false});total+=asset.bytes;
+      }
+      if(!Number.isSafeInteger(total))throw Error('Invalid total bytes');
+      data.build=manifest.build;data.sourceSHA=manifest.sourceSHA||null;data.sourceDirty=manifest.sourceDirty??null;for(const [url,item] of validated)required.set(url,item);data.requiredBytes=total;stage('DOWNLOAD');
+    },
+    subscribe(fn){listeners.add(fn);fn(snapshot());return()=>listeners.delete(fn);},
+    menuPresented(epoch){
+      if(data.stage==='ERROR'||!Number.isSafeInteger(epoch)||epoch<0||epoch<=(data.menuEpoch??-1))return;
+      data.menuEpoch=epoch;data.menuReady=true;publish();
+    },
+    start(fn){if(startup)return startup;if(data.stage==='ERROR')return Promise.reject(Error('Startup has failed'));data.engineStarts++;startup=Promise.resolve().then(fn).catch(e=>{fail('ENGINE_START','',String(e));throw e;});publish();return startup;},
+    playable(checks){if(data.stage==='ERROR')return false;if(!['world','player','camera','collision','navigation','input','multiplayer','rendered'].every(k=>checks[k]===true))return false;
+      if(!data.playable){data.stage='PLAYABLE';data.lastSuccess='PLAYABLE';data.percent=100;data.playable=true;data.readiness=checks;data.stages.push({stage:'PLAYABLE',at:performance.now()});publish();}return true;},
+    measure(name,elapsedMs,details={}){if(!Number.isFinite(elapsedMs)||elapsedMs<0)return;data.measurements.push({name,elapsedMs,at:performance.now(),...details});if(data.measurements.length>512)data.measurements.shift();},
+    note(name,details){data[name]=details;publish();}
+  };
+  global.addEventListener('error',event=>fail('JAVASCRIPT_ERROR',event.filename||'',event.message||'啟動失敗'));
+  global.addEventListener('unhandledrejection',event=>fail('UNHANDLED_REJECTION','',String(event.reason?.message||event.reason)));
+  publish();
+})(window);
+</script>
+		<script>window.manmanContentManifest={"version":1,"engine":[4,7,2],"packs":{"required-0":{"url":"content-f2f5eab7dc5f37850132c6863800a690734615b71022ebec4950a485bd870708.pck.gzip","logical":"content-f2f5eab7dc5f37850132c6863800a690734615b71022ebec4950a485bd870708.pck.gzip","bytes":10135651,"sha256":"f2f5eab7dc5f37850132c6863800a690734615b71022ebec4950a485bd870708","rawBytes":10514344,"rawSha256":"30bff12e56b179a94c82a4a17a77dc826cb0f7265dec86abf533a4f0c87d902b"},"required-1":{"url":"content-04fde674dea4eaa20082af2a892f8e6c9fb12c2d78b97472ee5e5119aff9fb5f.pck.gzip","logical":"content-04fde674dea4eaa20082af2a892f8e6c9fb12c2d78b97472ee5e5119aff9fb5f.pck.gzip","bytes":11649174,"sha256":"04fde674dea4eaa20082af2a892f8e6c9fb12c2d78b97472ee5e5119aff9fb5f","rawBytes":12136548,"rawSha256":"35a2480c03baf5a77cef41a270751f86ad93f3525b51b3577e7cc8bb13638f7f"},"required-2":{"url":"content-790bfe5df474d17ecd73f951c1018a0300b701d8d15ef1a0a0225f6720e9d1fb.pck.gzip","logical":"content-790bfe5df474d17ecd73f951c1018a0300b701d8d15ef1a0a0225f6720e9d1fb.pck.gzip","bytes":12421805,"sha256":"790bfe5df474d17ecd73f951c1018a0300b701d8d15ef1a0a0225f6720e9d1fb","rawBytes":12535564,"rawSha256":"05d3c41970a2170f7730f5e9086e8ef84553546e8c5827c4ecb7b98b1308e45a"},"required-3":{"url":"content-99149be6cccfc8e7010d60fac9c8a575607f700629fba229649f3b67604e0ca7.pck.gzip","logical":"content-99149be6cccfc8e7010d60fac9c8a575607f700629fba229649f3b67604e0ca7.pck.gzip","bytes":11256556,"sha256":"99149be6cccfc8e7010d60fac9c8a575607f700629fba229649f3b67604e0ca7","rawBytes":11677076,"rawSha256":"afba34d0bff00ab23fac8c5da2371da8cf4c99a6db1bf541d9b36b4c68ee46dd"},"required-4":{"url":"content-963ed9640802ea81cf4fc4fa1de80716296215acc5e7f6e47e6244b550c6e866.pck.gzip","logical":"content-963ed9640802ea81cf4fc4fa1de80716296215acc5e7f6e47e6244b550c6e866.pck.gzip","bytes":11665330,"sha256":"963ed9640802ea81cf4fc4fa1de80716296215acc5e7f6e47e6244b550c6e866","rawBytes":11944188,"rawSha256":"a7bfb7699e5353bc4ba5c09a956a794dac57b89e2c4c2caf378518b39235e710"},"required-5":{"url":"content-41452e4514d28485349120882e644506859edc76c34dbd0793c328e12d340821.pck.gzip","logical":"content-41452e4514d28485349120882e644506859edc76c34dbd0793c328e12d340821.pck.gzip","bytes":9165064,"sha256":"41452e4514d28485349120882e644506859edc76c34dbd0793c328e12d340821","rawBytes":9198372,"rawSha256":"87c03a8d6abba6b275ed454a01787808a1d0eca5e0ccd7642f03494e59ae1237"},"required-6":{"url":"content-4ad372655f206f78d478d2e8437b5c3eae7c913d5af31dd8ac20a230b90f65d0.pck.gzip","logical":"content-4ad372655f206f78d478d2e8437b5c3eae7c913d5af31dd8ac20a230b90f65d0.pck.gzip","bytes":9975111,"sha256":"4ad372655f206f78d478d2e8437b5c3eae7c913d5af31dd8ac20a230b90f65d0","rawBytes":10404388,"rawSha256":"f842a94667d02b64dce401f91c53be75c0e7e85c5728a6a67522b6692788a6b1"},"required-7":{"url":"content-d117f1d7dbdd5fdaacb489a02eb9ade23e3b04664e398ce344b25084e0d2b07d.pck.gzip","logical":"content-d117f1d7dbdd5fdaacb489a02eb9ade23e3b04664e398ce344b25084e0d2b07d.pck.gzip","bytes":9847485,"sha256":"d117f1d7dbdd5fdaacb489a02eb9ade23e3b04664e398ce344b25084e0d2b07d","rawBytes":9927524,"rawSha256":"4c6f75498d712299dfce3bd8771b01bb11ab280a7811ef81d87be294932570db"},"required-8":{"url":"content-164e4492b90c358df6c9374c0e1469cff978e12a5603420aca6f2a0c51ca8a67.pck.gzip","logical":"content-164e4492b90c358df6c9374c0e1469cff978e12a5603420aca6f2a0c51ca8a67.pck.gzip","bytes":2656971,"sha256":"164e4492b90c358df6c9374c0e1469cff978e12a5603420aca6f2a0c51ca8a67","rawBytes":2677464,"rawSha256":"f3ec228cab651f32b9d3bc0838057560fa03392b94600921ca944bc41804ec91"},"required-9":{"url":"content-b71df371c1ce80bb3cb0abe53026f08eb13db329e1e3900094d804d5a194a715.pck.gzip","logical":"content-b71df371c1ce80bb3cb0abe53026f08eb13db329e1e3900094d804d5a194a715.pck.gzip","bytes":12724181,"sha256":"b71df371c1ce80bb3cb0abe53026f08eb13db329e1e3900094d804d5a194a715","rawBytes":12760968,"rawSha256":"c34fdb08e1de0232a43c4d584e0662a8593a31ec5cf684ff33456a5cb158e59f"},"required-10":{"url":"content-c68db2b8598be3960c0764f52fb122ee5d652591c96a69f490b4270c5d2e5072.pck.gzip","logical":"content-c68db2b8598be3960c0764f52fb122ee5d652591c96a69f490b4270c5d2e5072.pck.gzip","bytes":11481187,"sha256":"c68db2b8598be3960c0764f52fb122ee5d652591c96a69f490b4270c5d2e5072","rawBytes":12041984,"rawSha256":"9a9f886cbfedaf8bf0c62d6d569247db7819dd61afb5caa47af8693554ec1a10"},"required-11":{"url":"content-fd2b81b078aaf67563d13c0d331ecb13cf5f576b9179810343589cb2de82891f.pck.gzip","logical":"content-fd2b81b078aaf67563d13c0d331ecb13cf5f576b9179810343589cb2de82891f.pck.gzip","bytes":8588938,"sha256":"fd2b81b078aaf67563d13c0d331ecb13cf5f576b9179810343589cb2de82891f","rawBytes":8939620,"rawSha256":"2814b2c71266483c511f53d666f3e85bf724de90e66a95ae92ce5982db7c0d0c"},"required-12":{"url":"content-977ef2ba848b286248d8491d78856330be71d2f6693766bf4e635f82f7083d23.pck.gzip","logical":"content-977ef2ba848b286248d8491d78856330be71d2f6693766bf4e635f82f7083d23.pck.gzip","bytes":12155351,"sha256":"977ef2ba848b286248d8491d78856330be71d2f6693766bf4e635f82f7083d23","rawBytes":12279852,"rawSha256":"db57541a400c6ec6158e1fe224bf78dcbb12daec70d81dc2dc3b6a5062861443"},"required-13":{"url":"content-dfda61a3ef36d99a715d7af9404275192d4746560a2c6c8d1b5fd679e47775da.pck.gzip","logical":"content-dfda61a3ef36d99a715d7af9404275192d4746560a2c6c8d1b5fd679e47775da.pck.gzip","bytes":5274726,"sha256":"dfda61a3ef36d99a715d7af9404275192d4746560a2c6c8d1b5fd679e47775da","rawBytes":5481372,"rawSha256":"021b6b5a244f2b9ed006f9ef63fe2b96b62df8c5c38a6d1078762ed854e33322"},"content-0":{"url":"content-8f905360e1f12645cf773d28eecb661d90a2353aa6ec42f4008ae3c511c33134.pck.gzip","logical":"content-8f905360e1f12645cf773d28eecb661d90a2353aa6ec42f4008ae3c511c33134.pck.gzip","bytes":11798011,"sha256":"8f905360e1f12645cf773d28eecb661d90a2353aa6ec42f4008ae3c511c33134","rawBytes":12193484,"rawSha256":"a2949c3b60530bd06449c1a8c77a8810020ca0ebae70277f19fbbcb44f1e2eef"},"content-1":{"url":"content-b79edb04f5a95521e790144c440a28078816bca4fe7255938b5f4dc064dfad4d.pck.gzip","logical":"content-b79edb04f5a95521e790144c440a28078816bca4fe7255938b5f4dc064dfad4d.pck.gzip","bytes":11348383,"sha256":"b79edb04f5a95521e790144c440a28078816bca4fe7255938b5f4dc064dfad4d","rawBytes":11817764,"rawSha256":"8c9bc9ea068bc048497790affec52ef8e67bc7d76c16d7d94961b48d5a371e54"},"content-2":{"url":"content-817eb412c0676a8962cd35e3e34296f66617677069fd2df0376345fc52e8f0f7.pck.gzip","logical":"content-817eb412c0676a8962cd35e3e34296f66617677069fd2df0376345fc52e8f0f7.pck.gzip","bytes":10029800,"sha256":"817eb412c0676a8962cd35e3e34296f66617677069fd2df0376345fc52e8f0f7","rawBytes":10293428,"rawSha256":"a40b02c042afe4ef92b500e0201ca8d7d143ef8fc1a9dacffcff103e05117de3"},"content-3":{"url":"content-b3acdd751515d065542ab6985eb003d583e145ef759a2f5ce8149e1f564daa5b.pck.gzip","logical":"content-b3acdd751515d065542ab6985eb003d583e145ef759a2f5ce8149e1f564daa5b.pck.gzip","bytes":4847002,"sha256":"b3acdd751515d065542ab6985eb003d583e145ef759a2f5ce8149e1f564daa5b","rawBytes":5007740,"rawSha256":"073ee45138b52492bc4b6636cd34a2262a397bd7b49224a2ea88a4ed8ff4496f"},"content-4":{"url":"content-7e611da36f31ebe2a6a8bb0e09d157964152d8510ebf316504ea964401357c7e.pck.gzip","logical":"content-7e611da36f31ebe2a6a8bb0e09d157964152d8510ebf316504ea964401357c7e.pck.gzip","bytes":2859696,"sha256":"7e611da36f31ebe2a6a8bb0e09d157964152d8510ebf316504ea964401357c7e","rawBytes":2954040,"rawSha256":"1078ff7e08d2072e0cd1673b7aa1339a0cf16b6b4af71d163263b74163343266"},"content-5":{"url":"content-b73ecf1488cb84d57ee0dbf4a9f45076e1f3266bb457417e706dcf69fa4e8815.pck.gzip","logical":"content-b73ecf1488cb84d57ee0dbf4a9f45076e1f3266bb457417e706dcf69fa4e8815.pck.gzip","bytes":11612187,"sha256":"b73ecf1488cb84d57ee0dbf4a9f45076e1f3266bb457417e706dcf69fa4e8815","rawBytes":11648436,"rawSha256":"70f588afb4ad5bfca53a8d025f0533c59433fc47e29bf20316afaed3221c90d5"},"content-6":{"url":"content-a1fb040fa26add037b5a98aa312f4ebd0ed36546283921a4807df9f752db8f23.pck.gzip","logical":"content-a1fb040fa26add037b5a98aa312f4ebd0ed36546283921a4807df9f752db8f23.pck.gzip","bytes":11944936,"sha256":"a1fb040fa26add037b5a98aa312f4ebd0ed36546283921a4807df9f752db8f23","rawBytes":11975212,"rawSha256":"e3a7cbeffd0c5e68997c8bd9159742a2502d002223ce2e01f978fac4408450fc"},"content-7":{"url":"content-9952f1faf8450d42efed84ab9cc6e7bac677626839b3e8b7a00f9f502b6dbdd4.pck.gzip","logical":"content-9952f1faf8450d42efed84ab9cc6e7bac677626839b3e8b7a00f9f502b6dbdd4.pck.gzip","bytes":11959422,"sha256":"9952f1faf8450d42efed84ab9cc6e7bac677626839b3e8b7a00f9f502b6dbdd4","rawBytes":11987732,"rawSha256":"a9055a9dd15b092f9a1102bc04609ba9d293067e13b1e98bd9884531118ebbf1"},"content-8":{"url":"content-4a0032284453e13d6512ec689dfbb58e0ff92e5399928a8a47077e0f301152f8.pck.gzip","logical":"content-4a0032284453e13d6512ec689dfbb58e0ff92e5399928a8a47077e0f301152f8.pck.gzip","bytes":12190717,"sha256":"4a0032284453e13d6512ec689dfbb58e0ff92e5399928a8a47077e0f301152f8","rawBytes":12223492,"rawSha256":"25d885d367084dfc960960f94560965a3d7629ef8ec7807e59934f3f0be2372c"},"content-9":{"url":"content-2630d5de5e252a0c45988d1e8f873d3258d84ff471a7ea3faa11c59f8b280bd4.pck.gzip","logical":"content-2630d5de5e252a0c45988d1e8f873d3258d84ff471a7ea3faa11c59f8b280bd4.pck.gzip","bytes":12394733,"sha256":"2630d5de5e252a0c45988d1e8f873d3258d84ff471a7ea3faa11c59f8b280bd4","rawBytes":12450624,"rawSha256":"199869abbbfbf7e91393701700212d82d1949252dda9ac192c894104274a2c30"},"content-10":{"url":"content-926b71af8e146ed134ebcba7901c0d236f5fe035ade9a421ba6ddafe53f629d0.pck.gzip","logical":"content-926b71af8e146ed134ebcba7901c0d236f5fe035ade9a421ba6ddafe53f629d0.pck.gzip","bytes":11510431,"sha256":"926b71af8e146ed134ebcba7901c0d236f5fe035ade9a421ba6ddafe53f629d0","rawBytes":11618152,"rawSha256":"903355597655cc1a82fd892b957c235cd525e2f36a63713c80eb2830189ca66f"},"content-11":{"url":"content-9f627d48f09e204ea340d7e007193bd5e608f4af65aca6ee751369f205355893.pck.gzip","logical":"content-9f627d48f09e204ea340d7e007193bd5e608f4af65aca6ee751369f205355893.pck.gzip","bytes":12181752,"sha256":"9f627d48f09e204ea340d7e007193bd5e608f4af65aca6ee751369f205355893","rawBytes":12273384,"rawSha256":"6b76dabc75eedb61727d25a4296f2666406c1dcd5d4b9b857270f58ad656da6b"},"content-12":{"url":"content-a35503b053426bce37de667f137e2d2778cbd051da2447561bb2d861345d4d6d.pck.gzip","logical":"content-a35503b053426bce37de667f137e2d2778cbd051da2447561bb2d861345d4d6d.pck.gzip","bytes":6597019,"sha256":"a35503b053426bce37de667f137e2d2778cbd051da2447561bb2d861345d4d6d","rawBytes":6670308,"rawSha256":"8080ef992fe408520171f08a704446994a2385ab46d9ac93230d3fadd3aafa0f"},"content-13":{"url":"content-efcf07200a41be079efcc337a6710e9c86242ba59670e0b081cf54c350f2331e.pck.gzip","logical":"content-efcf07200a41be079efcc337a6710e9c86242ba59670e0b081cf54c350f2331e.pck.gzip","bytes":11646035,"sha256":"efcf07200a41be079efcc337a6710e9c86242ba59670e0b081cf54c350f2331e","rawBytes":11764980,"rawSha256":"c0226e59556bffa206bed599c1d84f454258438a6b7635da3b71d811ff718d7b"},"content-14":{"url":"content-57933786197500718e4a0b75896d2dd7f4e555d9725f09f2dac118c9e379ba47.pck.gzip","logical":"content-57933786197500718e4a0b75896d2dd7f4e555d9725f09f2dac118c9e379ba47.pck.gzip","bytes":5731636,"sha256":"57933786197500718e4a0b75896d2dd7f4e555d9725f09f2dac118c9e379ba47","rawBytes":5820016,"rawSha256":"bcb46eb4464c8bf3ba519e96a9093c97bec930a31cb69bfaf071f0c059e6a5df"},"content-15":{"url":"content-4f1140da118fb74651d6ed0838a87bba49412ea36ccc701b7d645f6defcf07a1.pck.gzip","logical":"content-4f1140da118fb74651d6ed0838a87bba49412ea36ccc701b7d645f6defcf07a1.pck.gzip","bytes":12121541,"sha256":"4f1140da118fb74651d6ed0838a87bba49412ea36ccc701b7d645f6defcf07a1","rawBytes":12242172,"rawSha256":"7fc28b639f1e726270c7eeb746e3b6b0b9739c9dd3a1db32a02d88b7a60143ab"},"content-16":{"url":"content-704b264110c74204e77e3664c8f58e5e8e18f033de8f83985e8bd696438f3dd1.pck.gzip","logical":"content-704b264110c74204e77e3664c8f58e5e8e18f033de8f83985e8bd696438f3dd1.pck.gzip","bytes":5412476,"sha256":"704b264110c74204e77e3664c8f58e5e8e18f033de8f83985e8bd696438f3dd1","rawBytes":5473420,"rawSha256":"1a8233f72816429d8f2e80e549b2ddcf9858632e83bdd2f6ee52dbff436b9419"},"content-17":{"url":"content-f933e9ee2e1f327320c334174851d8fb0bc3b255ff7e02521d8c741bec676710.pck.gzip","logical":"content-f933e9ee2e1f327320c334174851d8fb0bc3b255ff7e02521d8c741bec676710.pck.gzip","bytes":12167207,"sha256":"f933e9ee2e1f327320c334174851d8fb0bc3b255ff7e02521d8c741bec676710","rawBytes":12572792,"rawSha256":"f991743967e0028a9471d7fb8dc8f6ced48a4c6a997ab93737cb80e57f526ee4"},"content-18":{"url":"content-fd553fe55a2d00fe1bf88d44bb331064bd701581a0a0ddca4c62db9be211b66d.pck.gzip","logical":"content-fd553fe55a2d00fe1bf88d44bb331064bd701581a0a0ddca4c62db9be211b66d.pck.gzip","bytes":11875687,"sha256":"fd553fe55a2d00fe1bf88d44bb331064bd701581a0a0ddca4c62db9be211b66d","rawBytes":12316720,"rawSha256":"fcb4454480c647ad5e91b63f1dab533d3da2eed6572650e559e2c7b1ada9907a"},"content-19":{"url":"content-c7c42c5c0aaa56eab44fd02ca560282645df27a2fbbb7f466aedcc9426a2a556.pck.gzip","logical":"content-c7c42c5c0aaa56eab44fd02ca560282645df27a2fbbb7f466aedcc9426a2a556.pck.gzip","bytes":11698698,"sha256":"c7c42c5c0aaa56eab44fd02ca560282645df27a2fbbb7f466aedcc9426a2a556","rawBytes":11902992,"rawSha256":"bff48f7038c2cee61f2b15398f47f0f8a5eb6e6d0ae4d419519a8824005992f9"},"content-20":{"url":"content-956a923ca5924790a09c43147e2d838905f338c1b8d0bdcb808777282b85e87f.pck.gzip","logical":"content-956a923ca5924790a09c43147e2d838905f338c1b8d0bdcb808777282b85e87f.pck.gzip","bytes":10378741,"sha256":"956a923ca5924790a09c43147e2d838905f338c1b8d0bdcb808777282b85e87f","rawBytes":10679920,"rawSha256":"a0abfbe78fa328fa13869347ec2ce67bb1928ea33395a4dc51b8f31db0b0b580"},"content-21":{"url":"content-060345ef25348ed587b675a0df2f0a3d68e013fc146775ba04c4ecbf6cf52d98.pck.gzip","logical":"content-060345ef25348ed587b675a0df2f0a3d68e013fc146775ba04c4ecbf6cf52d98.pck.gzip","bytes":8405684,"sha256":"060345ef25348ed587b675a0df2f0a3d68e013fc146775ba04c4ecbf6cf52d98","rawBytes":8689380,"rawSha256":"3973dcded70b80911ccb0892e61f6d2c2172410349e3d794741ec3011c5fa1b4"},"content-22":{"url":"content-e84b1e3f4d01fc95ba479497fabdbc092fde65f47804950dc70b5889c32646de.pck.gzip","logical":"content-e84b1e3f4d01fc95ba479497fabdbc092fde65f47804950dc70b5889c32646de.pck.gzip","bytes":8204184,"sha256":"e84b1e3f4d01fc95ba479497fabdbc092fde65f47804950dc70b5889c32646de","rawBytes":8364648,"rawSha256":"6781f037b3bc3e62252e281067ed520af976be43ec2ef891273fd3686663ea2f"},"content-23":{"url":"content-b79a0cd8e4c7f3bd6e6bb974fcf15dc057a62959b18356e80ebf030230e5753d.pck.gzip","logical":"content-b79a0cd8e4c7f3bd6e6bb974fcf15dc057a62959b18356e80ebf030230e5753d.pck.gzip","bytes":9459928,"sha256":"b79a0cd8e4c7f3bd6e6bb974fcf15dc057a62959b18356e80ebf030230e5753d","rawBytes":9660572,"rawSha256":"17afdae62b2b354d087afe7af8866b9959353b522d1e0e943082cb1308aea536"},"content-24":{"url":"content-757bdb35e57eb9f1dbf2e65d29d0b8cd167c1a7c1e5ed787192d0c0311f08bef.pck.gzip","logical":"content-757bdb35e57eb9f1dbf2e65d29d0b8cd167c1a7c1e5ed787192d0c0311f08bef.pck.gzip","bytes":9403950,"sha256":"757bdb35e57eb9f1dbf2e65d29d0b8cd167c1a7c1e5ed787192d0c0311f08bef","rawBytes":9497616,"rawSha256":"8b03f429c1403ce8a6965db359f6e3c6dfc3c1fb8136b6ebbd7124ea945666bb"},"content-25":{"url":"content-6487b359b0bef1ad8faadb05b9ccca931cdea310f154f83ce91000fe940a11c8.pck.gzip","logical":"content-6487b359b0bef1ad8faadb05b9ccca931cdea310f154f83ce91000fe940a11c8.pck.gzip","bytes":10789530,"sha256":"6487b359b0bef1ad8faadb05b9ccca931cdea310f154f83ce91000fe940a11c8","rawBytes":11079524,"rawSha256":"82a0c6275416fa9e166c7ef93ea57d3c4565a2db8ca76abb8cc7aa548649c71a"},"content-26":{"url":"content-c8bef1f786f4219099e30ce64c1b9b4890bea3bb01aef98be68415dd1de8c09c.pck.gzip","logical":"content-c8bef1f786f4219099e30ce64c1b9b4890bea3bb01aef98be68415dd1de8c09c.pck.gzip","bytes":1956950,"sha256":"c8bef1f786f4219099e30ce64c1b9b4890bea3bb01aef98be68415dd1de8c09c","rawBytes":1967036,"rawSha256":"a657b0f695a29ccfc9d51c4198c9db1eab97f2a9d5b7b4c900aefe4f44dff32e"},"content-27":{"url":"content-912a450d8707876439bf7d2b50874af7410465a0b3138f9a21808253c03de172.pck.gzip","logical":"content-912a450d8707876439bf7d2b50874af7410465a0b3138f9a21808253c03de172.pck.gzip","bytes":11095872,"sha256":"912a450d8707876439bf7d2b50874af7410465a0b3138f9a21808253c03de172","rawBytes":11316228,"rawSha256":"a075c63740678ea8a0bfeb6db3996fada6792ec2bf04f19ee5704d768aeb0aee"},"content-28":{"url":"content-225eddbfe2fd5321db680deb4d6fba86d22e892e32093b07a67f37537413148d.pck.gzip","logical":"content-225eddbfe2fd5321db680deb4d6fba86d22e892e32093b07a67f37537413148d.pck.gzip","bytes":6185044,"sha256":"225eddbfe2fd5321db680deb4d6fba86d22e892e32093b07a67f37537413148d","rawBytes":6369496,"rawSha256":"6a29b232b522e23527de8accc999045bac2284dd3c0dcde655eac45c193e94ea"}},"required":["required-0","required-1","required-2","required-3","required-4","required-5","required-6","required-7","required-8","required-9","required-10","required-11","required-12","required-13"],"resources":{"public_facilities":["content-21","content-22","content-23","content-24","content-25","content-26","content-27","content-28"],"housing_upgrades":["content-15","content-16","content-17","content-18","content-19","content-20"],"boats_extra":["content-4"],"flora_decor":["content-13","content-14"],"ambient_audio":["content-0","content-1","content-2","content-3"],"creatures_fish":["content-5","content-6","content-7","content-8","content-9"],"creatures_insects":["content-10","content-11","content-12"]}};</script>
+		<script id="manman-content-controller">(function(global){
+  'use strict';
+  if(global.manmanContent)return;
+  const jobs=new Map(),prefetched=new Set(),paused=new Set();
+  let active=null,prefetchPromise=null,prefetchAbort=null,prefetchTransfer=null;
+  let background={state:'idle',completed:0,total:0,failed:[]};
+  const report=state=>{background={...background,...state};global.manmanBoot.note?.('backgroundPrefetch',background);};
+  const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  async function drain(response){
+    if(!response.ok)throw Error('HTTP '+response.status);
+    if(!response.body){await response.arrayBuffer();return;}
+    const reader=response.body.getReader();
+    try{while(true){const part=await reader.read();if(part.done)break;}}
+    finally{reader.releaseLock();}
+  }
+  function optionalIds(){
+    const manifest=global.manmanContentManifest||{};
+    const required=new Set(manifest.required||[]);
+    const result=[],seen=new Set();
+    const add=id=>{if(!required.has(id)&&manifest.packs?.[id]&&!seen.has(id)){seen.add(id);result.push(id);}};
+    for(const resource of ['public_facilities','flora_decor','boats_extra','ambient_audio','creatures_fish','creatures_insects','housing_upgrades'])
+      for(const id of manifest.resources?.[resource]||[])add(id);
+    for(const id of Object.keys(manifest.packs||{}).sort((a,b)=>(manifest.packs[a].bytes||0)-(manifest.packs[b].bytes||0)))add(id);
+    return result;
+  }
+  global.manmanContent={
+    request(id){
+      if(jobs.has(id))return;
+      if(active!==null)throw Error('Content download budget exceeded');
+      const asset=global.manmanContentManifest?.packs[id];
+      if(!asset)throw Error('Unknown content pack: '+id);
+      const interrupted=prefetchTransfer;
+      if(prefetchAbort)prefetchAbort.abort();
+      const job={status:'pending',bytes:null,error:null};jobs.set(id,job);active=id;
+      (async()=>{
+        try{
+          // Wait until the cancelled low-priority transfer has yielded its slot.
+          if(interrupted)await interrupted.catch(()=>{});
+          const downloadStart=performance.now();
+          const required=(global.manmanContentManifest.required||[]).includes(id);
+          const compressed=await global.manmanBoot.fetchVerified(asset,2,30000,{fatal:required});
+          prefetched.add(id);
+          global.manmanBoot.measure?.('content.download_verify',performance.now()-downloadStart,{id});
+          const inflateStart=performance.now();
+          const raw=new Uint8Array(asset.rawBytes);let offset=0;
+          const reader=new Response(compressed).body.pipeThrough(new DecompressionStream('gzip')).getReader();
+          try{
+            while(true){const chunk=await reader.read();if(chunk.done)break;
+              if(offset+chunk.value.length>raw.length)throw Error('Inflated content exceeds manifest size');
+              raw.set(chunk.value,offset);offset+=chunk.value.length;
+            }
+          }catch(error){try{await reader.cancel(error);}catch{}throw error;}finally{reader.releaseLock();}
+          if(offset!==raw.length)throw Error('Inflated content size mismatch');
+          const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',raw)),b=>b.toString(16).padStart(2,'0')).join('');
+          if(hash!==asset.rawSha256)throw Error('Inflated content hash mismatch');
+          global.manmanBoot.measure?.('content.inflate_verify',performance.now()-inflateStart,{id});
+          job.bytes=raw;job.status='ready';
+        }catch(error){job.status='error';job.error=String(error);if((global.manmanContentManifest.required||[]).includes(id))global.manmanBoot.fail('CONTENT_PACK',asset.url,String(error));}
+      })();
+    },
+    status(id){const job=jobs.get(id);return job?job.status:'missing';},
+    bytes(id){const job=jobs.get(id);if(job?.status!=='ready')throw Error('Content is not verified');return job.bytes;},
+    release(id){if(active!==id)throw Error('Content release mismatch');jobs.delete(id);active=null;},
+    error(id){return jobs.get(id)?.error||null;},
+    pausePrefetch(reason='application'){
+      paused.add(reason);prefetchAbort?.abort();
+      if(prefetchPromise)report({state:'paused'});
+    },
+    resumePrefetch(reason='application'){paused.delete(reason);},
+    prefetchOptional(){
+      if(prefetchPromise)return prefetchPromise;
+      prefetchPromise=(async()=>{
+        await delay(1200);
+        const ids=optionalIds(),failed=[];
+        const count=()=>ids.filter(id=>prefetched.has(id)).length;
+        report({state:paused.size?'paused':'running',completed:count(),total:ids.length,failed:[]});
+        for(let index=0;index<ids.length;){
+          while(active!==null||paused.size)await delay(200);
+          const id=ids[index],asset=global.manmanContentManifest?.packs[id];
+          if(!asset||prefetched.has(id)){index++;continue;}
+          const controller=new AbortController();prefetchAbort=controller;
+          report({state:'running',id});
+          try{
+            prefetchTransfer=(async()=>{
+              const response=await fetch(asset.url,{cache:'force-cache',signal:controller.signal});
+              await drain(response);
+            })();
+            await prefetchTransfer;
+            prefetched.add(id);index++;
+            report({completed:count()});
+          }catch(error){
+            if(controller.signal.aborted){await delay(200);continue;}
+            failed.push(id);index++;
+          }finally{
+            if(prefetchAbort===controller){prefetchAbort=null;prefetchTransfer=null;}
+          }
+        }
+        // These are completed HTTP-cache warmups, not durable-cache receipts.
+        report({state:failed.length?'partial_failure':'complete',completed:count(),failed});
+      })().finally(()=>{prefetchPromise=null;});
+      return prefetchPromise;
+    },
+  };
+  if(global.document?.addEventListener){
+    const visibility=()=>{if(global.document.hidden)global.manmanContent.pausePrefetch('hidden');else global.manmanContent.resumePrefetch('hidden');};
+    global.document.addEventListener('visibilitychange',visibility);visibility();
+  }
+})(window);
+</script>
+		<script src="index.js?build=e897da1506a44527"></script>
+		<script id="manman-boot-shell">(function () {
+  'use strict';
+  const boot=window.manmanBoot;
+  const overlay=document.getElementById('status');
+  const progress=document.getElementById('status-progress');
+  const notice=document.getElementById('status-notice');
+  const copy=document.getElementById('godot-loading-copy');
+  const percentage=document.createElement('span');percentage.id='boot-percent';progress.after(percentage);
+  const art=Array.from(document.querySelectorAll('#boot-art img'));
+  const backdropArt=Array.from(document.querySelectorAll('#boot-art-backdrop img'));
+  const backgrounds=window.manmanLoadingBackgrounds||[];
+  const imageCache=new Map();let desiredImage=0,activeImage=0,leaving=false,leaveFinished=false,menuReached=false;
+  function background(index){
+    desiredImage=index;if(!art.length||!backdropArt.length||!backgrounds[index]||activeImage===index)return;
+    let preload=imageCache.get(index);
+    if(!preload){preload=new Image();preload.decoding='async';preload.fetchPriority='low';imageCache.set(index,preload);preload.src=backgrounds[index];}
+    const show=()=>{
+      if(desiredImage!==index||!preload.naturalWidth)return;
+      const next=art.find(image=>!image.classList.contains('active'))||art[0];
+      const nextBackdrop=backdropArt.find(image=>!image.classList.contains('active'))||backdropArt[0];
+      next.src=backgrounds[index];nextBackdrop.src=backgrounds[index];
+      for(const image of art)image.classList.toggle('active',image===next);
+      for(const image of backdropArt)image.classList.toggle('active',image===nextBackdrop);
+      activeImage=index;
+    };
+    if(preload.complete)show();else preload.onload=show;
+    preload.onerror=()=>boot.note('backgroundFailure',backgrounds[index]);
+  }
+  const controls=document.createElement('div');
+  controls.id='boot-error-controls';controls.hidden=true;
+  const retry=document.createElement('button');retry.textContent='重試';
+  const diagnostics=document.createElement('button');diagnostics.textContent='複製診斷';
+  const diagnosticText=document.createElement('textarea');
+  diagnosticText.readOnly=true;diagnosticText.hidden=true;
+  diagnosticText.setAttribute('aria-label','啟動診斷');
+  controls.append(retry,diagnostics,diagnosticText);notice.after(controls);
+  let retryRequested=false;
+  // The only reload is a deliberate user action on the visible error screen.
+  retry.addEventListener('click',()=>{
+    if(retryRequested)return;retryRequested=true;retry.disabled=true;
+    try{sessionStorage.setItem('manman.boot.userRetry',boot.snapshot().attempt);}catch{}
+    window.location.reload();
+  });
+  diagnostics.addEventListener('click',async()=>{
+    const value=JSON.stringify(boot.snapshot(),null,2);
+    try{await navigator.clipboard.writeText(value);diagnostics.textContent='已複製';}
+    catch{diagnosticText.value=value;diagnosticText.hidden=false;diagnosticText.focus();diagnosticText.select();}
+  });
+  const labels={BOOT:'正在準備啟動…',DOWNLOAD:'正在下載必要內容…',ENGINE:'正在解壓與啟動引擎…',WORLD:'正在準備世界、角色與操作…',PLAYABLE:'準備完成，歡迎來到慢慢島！'};
+  boot.subscribe(state=>{
+    overlay.style.visibility='visible';
+		if(state.menuReady===true)menuReached=true;
+		if(menuReached&&state.stage!=='ERROR'){
+			overlay.hidden=true;
+			overlay.classList.remove('awaiting-input');
+			return;
+		}
+    if(state.stage==='ERROR'||state.contentBusy){overlay.hidden=false;overlay.classList.remove('leaving');}
+    else if(state.playable&&leaveFinished){overlay.hidden=true;}
+    else if(state.playable&&!leaving){
+      leaving=true;background(3);
+      overlay.classList.add('leaving');
+      setTimeout(()=>{leaveFinished=true;const latest=boot.snapshot();if(latest.stage!=='ERROR'&&!latest.contentBusy)overlay.hidden=true;},window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:250);
+    }
+    if(!state.playable)background(state.stage==='ENGINE'?1:state.stage==='WORLD'?2:0);
+    if(state.stage==='WORLD'&&backgrounds[3]&&!imageCache.has(3)){
+      const finalImage=new Image();finalImage.decoding='async';finalImage.fetchPriority='low';
+      imageCache.set(3,finalImage);finalImage.src=backgrounds[3];
+    }
+    overlay.classList.toggle('awaiting-input',!!state.awaitingInput&&!state.contentBusy&&state.stage!=='ERROR');
+    progress.max=100;progress.value=state.percent;
+    percentage.textContent=state.percent+'%';
+    progress.style.display=state.stage==='ERROR'||(state.playable&&state.contentBusy)?'none':'block';
+    percentage.hidden=state.playable&&state.contentBusy;
+		copy.textContent=state.playable&&state.contentBusy?'正在背景準備這次需要的內容…':(labels[state.stage]||'啟動失敗');
+    progress.setAttribute('aria-label',`${copy.textContent} ${state.percent}%`);
+    controls.hidden=state.stage!=='ERROR';
+    notice.style.display=state.stage==='ERROR'?'block':'none';
+    if(state.error){
+      const stages={BOOT:'啟動',DOWNLOAD:'必要內容下載',ENGINE:'引擎啟動',WORLD:'世界準備'};
+      const messages={HASH_MISMATCH:'下載內容與版本不符，請重試。',SIZE_MISMATCH:'下載內容不完整，請重試。',DOWNLOAD_STALLED:'網路傳輸已停止回應，請確認連線後重試。',HTTP_404:'找不到必要資源，請稍後重試。'};
+      notice.textContent=`${stages[state.error.stage]||state.error.stage}失敗（${state.error.code}）：${messages[state.error.code]||state.error.message||'無法完成載入，請重試。'}${state.error.resource?'\n資源：'+state.error.resource:''}`;
+      notice.setAttribute('role','alert');
+    }
+  });
+})();
+</script>
+		<script id="manman-engine-start">(function () {
+  'use strict';
+  const boot=window.manmanBoot;
+  window.manmanStartEngine=function(config,threads){
+    if(config.serviceWorker||threads){boot.fail('UNSUPPORTED_EXPORT','','本載入器需要單執行緒、PWA 關閉的匯出。');return;}
+    const missing=Engine.getMissingFeatures({threads:false});
+    if(missing.length){boot.fail('MISSING_BROWSER_FEATURE','','瀏覽器缺少必要功能：'+missing.join('、'));return;}
+    try{boot.configure(window.manmanBootManifest);}catch(error){boot.fail('INVALID_MANIFEST','boot-manifest.json',String(error));return;}
+    boot.start(()=>{
+      const engine=new Engine(config);
+      return engine.startGame({onProgress(){},onPrintError(message){
+        console.error(message);
+        if(!boot.snapshot().playable&&/^(ERROR|SCRIPT ERROR)/.test(message))boot.fail('GODOT_ERROR','',message);
+      }});
+    }).then(()=>{boot.note('enginePromiseResolvedAt',performance.now());}).catch(()=>{});
+  };
+  document.getElementById('canvas').addEventListener('webglcontextlost',event=>{
+    event.preventDefault();boot.fail('WEBGL_CONTEXT_LOST','','圖形處理中斷，請重試。存檔仍會保留。');
+  });
+})();
+</script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":17615216,"index.wasm":10185394},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_THREADS_ENABLED = false;
+window.manmanStartEngine(GODOT_CONFIG, GODOT_THREADS_ENABLED);
+		</script>
+	
+	<script id="manman-pwa-registration">
+	if ('serviceWorker' in navigator) window.addEventListener('load', function () {
+		var register = function () { navigator.serviceWorker.register('./service-worker.js', { scope: './', updateViaCache: 'none' }).catch(function (error) { console.warn('PWA registration failed', error); }); };
+		if (!window.manmanBoot || window.manmanBoot.snapshot().playable) { register(); return; }
+		var unsubscribe = window.manmanBoot.subscribe(function (state) { if (state.playable) { unsubscribe(); register(); } });
+	});
+	</script>
+</body>
+</html>
+
