@@ -678,7 +678,7 @@ const Engine = (function () {
 	Engine.load = function (basePath, size) {
 		if (loadPromise == null) {
 			loadPath = basePath;
-			loadPromise = preloader.loadPromise(`${loadPath}.wasm.gzip?build=8db40d83c8313c40`, size, true).then(function (response) {
+			loadPromise = preloader.loadPromise(`${loadPath}.wasm.gzip?build=469bf6b0c2f1fe62`, size, true).then(function (response) {
     if (typeof DecompressionStream === 'undefined') {
       throw new Error('請更新瀏覽器，以載入慢慢島（需要 gzip 解壓支援）。');
     }
@@ -779,7 +779,7 @@ const Engine = (function () {
             start: function () {
               this.index = 0;
               this.reader = null;
-              this.sizes = [23134942];
+              this.sizes = [23135236];
             },
             pull: async function (controller) {
               try {
@@ -789,7 +789,7 @@ const Engine = (function () {
                       controller.close();
                       return;
                     }
-                    const response = await preloader.loadPromise(file + '.gzip' + '?build=8db40d83c8313c40', this.sizes[this.index], true);
+                    const response = await preloader.loadPromise(file + '.gzip' + '?build=469bf6b0c2f1fe62', this.sizes[this.index], true);
                     if (!response.body) throw new Error('Compressed island data cannot be streamed by this browser.');
                     this.reader = response.body.getReader();
                   }
