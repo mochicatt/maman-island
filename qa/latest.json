@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "run_id": "20261001-001943-25835-8568dcc4-fast",
+  "run_id": "20261001-151646-52206-1dafb21f-fast",
   "mode": "fast",
   "profile": "test",
-  "source_sha": "238df1e24484ead61bcef69bbfc6f925bf8a20e3",
-  "sha": "238df1e24484ead61bcef69bbfc6f925bf8a20e3",
-  "input_digest": "0fd4e59ef1833032a4d8f80028d1003b441cc28eeafa33a4cff670a8231cf820",
-  "manifest_digest": "9c3900b233858a34c687e418e9f9d8afb7254877e50fc49fc6622699b10bef77",
+  "source_sha": "99149558b229a1c82d95c4b8070ee81aff9e2626",
+  "sha": "99149558b229a1c82d95c4b8070ee81aff9e2626",
+  "input_digest": "8b61dbad7eac70cede6efe8b3ff83b7bdf26af3533f26d9d8d249176dceb0a7a",
+  "manifest_digest": "eb8dfdd12b2543aa6423f3140b614e742ef6b6a43bc6cc101e672d573ce4f2d1",
   "platform": {
     "system": "Darwin",
     "release": "25.5.0",
@@ -30,9 +30,9 @@
       "id": "qa_tooling_unittest",
       "status": "PASS",
       "completed": true,
-      "seconds": 1.195679,
+      "seconds": 1.159406,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/238df1e24484ead61bcef69bbfc6f925bf8a20e3/qa/runs/20261001-001943-25835-8568dcc4-fast/qa_tooling_unittest/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/99149558b229a1c82d95c4b8070ee81aff9e2626/qa/runs/20261001-151646-52206-1dafb21f-fast/qa_tooling_unittest/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -40,9 +40,9 @@
       "id": "godot_web_compression",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.070879,
+      "seconds": 0.06277,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/238df1e24484ead61bcef69bbfc6f925bf8a20e3/qa/runs/20261001-001943-25835-8568dcc4-fast/godot_web_compression/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/99149558b229a1c82d95c4b8070ee81aff9e2626/qa/runs/20261001-151646-52206-1dafb21f-fast/godot_web_compression/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -50,9 +50,9 @@
       "id": "change_locality",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.066238,
+      "seconds": 0.062343,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/238df1e24484ead61bcef69bbfc6f925bf8a20e3/qa/runs/20261001-001943-25835-8568dcc4-fast/change_locality/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/99149558b229a1c82d95c4b8070ee81aff9e2626/qa/runs/20261001-151646-52206-1dafb21f-fast/change_locality/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -60,9 +60,9 @@
       "id": "import_cache",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.09051,
+      "seconds": 0.087251,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/238df1e24484ead61bcef69bbfc6f925bf8a20e3/qa/runs/20261001-001943-25835-8568dcc4-fast/import_cache/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/99149558b229a1c82d95c4b8070ee81aff9e2626/qa/runs/20261001-151646-52206-1dafb21f-fast/import_cache/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -70,9 +70,9 @@
       "id": "web_candidate",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.151991,
+      "seconds": 0.065559,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/238df1e24484ead61bcef69bbfc6f925bf8a20e3/qa/runs/20261001-001943-25835-8568dcc4-fast/web_candidate/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/99149558b229a1c82d95c4b8070ee81aff9e2626/qa/runs/20261001-151646-52206-1dafb21f-fast/web_candidate/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -80,9 +80,9 @@
       "id": "browser_control_stability",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.078992,
+      "seconds": 0.0504,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/238df1e24484ead61bcef69bbfc6f925bf8a20e3/qa/runs/20261001-001943-25835-8568dcc4-fast/browser_control_stability/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/99149558b229a1c82d95c4b8070ee81aff9e2626/qa/runs/20261001-151646-52206-1dafb21f-fast/browser_control_stability/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -90,9 +90,9 @@
       "id": "web_save_lease",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.057099,
+      "seconds": 0.049486,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/238df1e24484ead61bcef69bbfc6f925bf8a20e3/qa/runs/20261001-001943-25835-8568dcc4-fast/web_save_lease/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/99149558b229a1c82d95c4b8070ee81aff9e2626/qa/runs/20261001-151646-52206-1dafb21f-fast/web_save_lease/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -100,9 +100,9 @@
       "id": "godot_web_export",
       "status": "PASS",
       "completed": true,
-      "seconds": 18.704202,
+      "seconds": 18.21862,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/238df1e24484ead61bcef69bbfc6f925bf8a20e3/qa/runs/20261001-001943-25835-8568dcc4-fast/godot_web_export/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/99149558b229a1c82d95c4b8070ee81aff9e2626/qa/runs/20261001-151646-52206-1dafb21f-fast/godot_web_export/stdout.log",
       "errors": [],
       "anomalies": []
     }
@@ -112,7 +112,7 @@
   "metrics": {},
   "seeds": [],
   "timing": {
-    "jobs_seconds": 20.41559
+    "jobs_seconds": 19.755835
   },
   "known_gaps": [
     "Fast TEST release checks only; full regression and multi-seed coverage were not run.",
@@ -241,5 +241,5 @@
     }
   ],
   "scenario_errors": [],
-  "prepared_sha": "238df1e24484ead61bcef69bbfc6f925bf8a20e3"
+  "prepared_sha": "99149558b229a1c82d95c4b8070ee81aff9e2626"
 }
