@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "run_id": "20261002-190933-2555-b5d86559-fast",
+  "run_id": "20261003-142617-83736-608518c8-fast",
   "mode": "fast",
   "profile": "test",
-  "source_sha": "b4b5059c11ed3d04a34fbac62440135a1cd0b199",
-  "sha": "b4b5059c11ed3d04a34fbac62440135a1cd0b199",
-  "input_digest": "4e9e37e4bde737a30f1b5cf6ea5c783952fca222e778608e7d771aabc16a8980",
-  "manifest_digest": "b0023ac736ee454d3be5cf92ca8398c0b2c779835e40fe08e6b65d834177bd95",
+  "source_sha": "17ff317f1d871facdca80442c9c26cd315f0764d",
+  "sha": "17ff317f1d871facdca80442c9c26cd315f0764d",
+  "input_digest": "050e08a3332155047438896b5080e4b5ef36c58d416a7ca4e08d4a8622dd470b",
+  "manifest_digest": "14cba1c569db33aff2aa613f0712b3724b670df595c514ceee2a63437e9f3813",
   "platform": {
     "system": "Darwin",
     "release": "25.5.0",
@@ -16,7 +16,6 @@
   "result": "PASS",
   "qa_result": "PASS",
   "required_ids": [
-    "godot_import_verify",
     "qa_tooling_unittest",
     "godot_web_compression",
     "change_locality",
@@ -30,23 +29,13 @@
     "godot_web_export"
   ],
   "tests": {
-    "godot_import_verify": {
-      "id": "godot_import_verify",
-      "status": "PASS",
-      "completed": true,
-      "seconds": 3.819586,
-      "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/godot_import_verify/stdout.log",
-      "errors": [],
-      "anomalies": []
-    },
     "qa_tooling_unittest": {
       "id": "qa_tooling_unittest",
       "status": "PASS",
       "completed": true,
-      "seconds": 1.107815,
+      "seconds": 1.143022,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/qa_tooling_unittest/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/qa_tooling_unittest/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -54,9 +43,9 @@
       "id": "godot_web_compression",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.076671,
+      "seconds": 0.064908,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/godot_web_compression/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/godot_web_compression/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -64,9 +53,9 @@
       "id": "change_locality",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.067113,
+      "seconds": 0.067611,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/change_locality/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/change_locality/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -74,9 +63,9 @@
       "id": "import_cache",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.125071,
+      "seconds": 0.128623,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/import_cache/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/import_cache/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -84,9 +73,9 @@
       "id": "web_candidate",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.156479,
+      "seconds": 0.070321,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/web_candidate/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/web_candidate/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -94,9 +83,9 @@
       "id": "browser_control_stability",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.082487,
+      "seconds": 0.056544,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/browser_control_stability/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/browser_control_stability/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -104,9 +93,9 @@
       "id": "web_save_lease",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.053844,
+      "seconds": 0.054393,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/web_save_lease/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/web_save_lease/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -114,9 +103,9 @@
       "id": "test_mobile_runtime_regressions",
       "status": "PASS",
       "completed": true,
-      "seconds": 19.769041,
+      "seconds": 32.827552,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/test_mobile_runtime_regressions/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/test_mobile_runtime_regressions/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -124,9 +113,9 @@
       "id": "browser_runtime_health",
       "status": "PASS",
       "completed": true,
-      "seconds": 0.047951,
+      "seconds": 0.045606,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/browser_runtime_health/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/browser_runtime_health/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -134,9 +123,9 @@
       "id": "test_road_edge_render",
       "status": "PASS",
       "completed": true,
-      "seconds": 1.145303,
+      "seconds": 1.055406,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/test_road_edge_render/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/test_road_edge_render/stdout.log",
       "errors": [],
       "anomalies": []
     },
@@ -144,9 +133,9 @@
       "id": "godot_web_export",
       "status": "PASS",
       "completed": true,
-      "seconds": 19.523068,
+      "seconds": 21.343121,
       "exit_code": 0,
-      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/godot_web_export/stdout.log",
+      "log": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/godot_web_export/stdout.log",
       "errors": [],
       "anomalies": []
     }
@@ -156,67 +145,62 @@
   "metrics": {},
   "seeds": [],
   "timing": {
-    "jobs_seconds": 45.974429,
-    "wall_seconds": 49.555293,
+    "jobs_seconds": 56.857107,
+    "wall_seconds": 56.705266,
     "slowest_jobs": [
       {
         "id": "test_mobile_runtime_regressions",
-        "seconds": 19.769041,
+        "seconds": 32.827552,
         "status": "PASS"
       },
       {
         "id": "godot_web_export",
-        "seconds": 19.523068,
-        "status": "PASS"
-      },
-      {
-        "id": "godot_import_verify",
-        "seconds": 3.819586,
-        "status": "PASS"
-      },
-      {
-        "id": "test_road_edge_render",
-        "seconds": 1.145303,
+        "seconds": 21.343121,
         "status": "PASS"
       },
       {
         "id": "qa_tooling_unittest",
-        "seconds": 1.107815,
+        "seconds": 1.143022,
         "status": "PASS"
       },
       {
-        "id": "web_candidate",
-        "seconds": 0.156479,
+        "id": "test_road_edge_render",
+        "seconds": 1.055406,
         "status": "PASS"
       },
       {
         "id": "import_cache",
-        "seconds": 0.125071,
+        "seconds": 0.128623,
         "status": "PASS"
       },
       {
-        "id": "browser_control_stability",
-        "seconds": 0.082487,
-        "status": "PASS"
-      },
-      {
-        "id": "godot_web_compression",
-        "seconds": 0.076671,
+        "id": "web_candidate",
+        "seconds": 0.070321,
         "status": "PASS"
       },
       {
         "id": "change_locality",
-        "seconds": 0.067113,
+        "seconds": 0.067611,
+        "status": "PASS"
+      },
+      {
+        "id": "godot_web_compression",
+        "seconds": 0.064908,
+        "status": "PASS"
+      },
+      {
+        "id": "browser_control_stability",
+        "seconds": 0.056544,
         "status": "PASS"
       },
       {
         "id": "web_save_lease",
-        "seconds": 0.053844,
+        "seconds": 0.054393,
         "status": "PASS"
       },
       {
         "id": "browser_runtime_health",
-        "seconds": 0.047951,
+        "seconds": 0.045606,
         "status": "PASS"
       }
     ]
@@ -240,7 +224,7 @@
       "scenario_id": "current-name-backpack-house-visibility",
       "exposures": 1,
       "status": "PASS",
-      "evidence": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/b4b5059c11ed3d04a34fbac62440135a1cd0b199/qa/runs/20261002-190933-2555-b5d86559-fast/test_mobile_runtime_regressions/stdout.log"
+      "evidence": "/var/folders/mk/9pst4_4n2fxblf2cfs1tgkmm0000gn/T/manman-local-deploy/17ff317f1d871facdca80442c9c26cd315f0764d/qa/runs/20261003-142617-83736-608518c8-fast/test_mobile_runtime_regressions/stdout.log"
     },
     {
       "scenario_id": "real-network-transport",
@@ -249,5 +233,5 @@
     }
   ],
   "scenario_errors": [],
-  "prepared_sha": "b4b5059c11ed3d04a34fbac62440135a1cd0b199"
+  "prepared_sha": "17ff317f1d871facdca80442c9c26cd315f0764d"
 }
